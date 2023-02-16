@@ -345,6 +345,7 @@ app.post("/submit-registration", async (req, res) => {
 
 app.post("/auth", async (req, res) => {
     console.log("req.session.page", req.session.page);
+
     let response = {
         success: false,
         error: undefined
@@ -368,7 +369,7 @@ app.post("/auth", async (req, res) => {
         sess.user = JSON.stringify(resp.data.user)
         response.success = true
         response.data = resp.data
-
+        const is_admin = sess.user && JSON.parse(sess.user).role.includes("admin")
 
         const transactions = await functions.getTransactions(JSON.parse(sess.user)._id);
         const accounts = await functions.getAccounts(JSON.parse(sess.user)._id);
@@ -380,7 +381,18 @@ app.post("/auth", async (req, res) => {
         const notifications = await functions.getNotifications(JSON.parse(sess.user)._id);
         const user_has_account = accounts && accounts.length ? true : false;
 
-        console.log({ user_has_account });
+        console.log({ user_has_account, is_admin });
+
+        if (is_admin) {
+            const approved_transactions = await functions.getAllTransactions("approved");
+            const pending_transactions = await (await functions.getAllTransactions("pending")).filter(i => i.type !== "referral_bonus")
+            const total_deposit = await functions.calcTotalTransByType(approved_transactions, "deposit");
+            const total_withdrawn = await functions.calcTotalTransByType(approved_transactions, "withdrawal");
+            const total_invested = await functions.calcTotalTransByType(approved_transactions, "investment");
+            data["admin"] = {
+                total_deposit, total_withdrawn, total_invested, pending_transactions
+            }
+        }
 
         data["available_balance"] = accounts && accounts.length ? accounts[0].balance : 0
         data["total_invested"] = investments.total;
@@ -412,7 +424,7 @@ app.post("/auth", async (req, res) => {
         data["currency"] = accounts && accounts.length ? accounts[0].currency : "BTC"
 
         data["website"] = website_url//process.env["WEBSITE_URL"]
-
+        console.log("data.user.has_account", data.user.has_account);
         req.session["data"] = data;
 
 
@@ -431,13 +443,34 @@ app.post("/auth", async (req, res) => {
 
 app.get("/admin", async (req, res) => {
     const sess = req.session;
-
-    res.render(path + "/admin", {
-
-        page_name: "admin",
-        user: JSON.parse(sess.user),
-        // notifications
-    });
+    //console.log("user role", sess.user.role, "parsed role", JSON.parse(sess.user).role);
+    if (sess.email && sess.password && (sess.user && JSON.parse(sess.user).role.includes("admin"))) {
+        const data = sess.data;
+        const { total_deposit, total_withdrawn, total_invested, pending_transactions } = data.admin
+        console.log("show data.admin");
+        console.log(data.admin);
+        res.render(path + "/admin", {
+            data,
+            page_name: "admin",
+            user: JSON.parse(sess.user),
+            total_deposit,
+            total_withdrawn,
+            total_invested,
+            pending_transactions
+            // notifications
+        });
+    } else {
+        req.session["page"] = "admin"
+        res.render(path + "/auth-signin", {
+            page_name: "auth-signin",
+            error: sess.user && (!JSON.parse(sess.user).role.includes("admin"))
+                ? "You need an admin account to access this page"
+                : req.query.auth ? "Invalid login credentials"
+                    : null,
+            login_endpoint: user_board_url /*process.env["USER_BOARD_URL"]*/ + "/auth",
+            redirect_url: user_board_url /*process.env["USER_BOARD_URL"]*/ + "/"
+        });
+    }
 });
 
 app.post("/invest", async (req, res) => {
@@ -446,7 +479,9 @@ app.post("/invest", async (req, res) => {
         const user = req.session.data.user
         const { firstname, lastname, email } = user
         let post_data = req.body
-
+        post_data["created_by"].firstname = firstname;
+        post_data["created_by"].lastname = lastname;
+        post_data["created_by"].email = email;
         let headers = {
             "Content-type": "application/json",
             "x-auth-token": req.session.token
@@ -742,11 +777,20 @@ app.post("/withdraw", async (req, res) => {
             req.session.data.user//);
         const { firstname, lastname, email } = user
         let post_data = req.body
+        post_data["created_by"].firstname = firstname;
+        post_data["created_by"].lastname = lastname;
+        post_data["created_by"].email = email;
         console.log({ post_data });
         let headers = {
             "Content-type": "application/json",
             "x-auth-token": req.session.token
         }
+        await axios.put(server_base_url
+            + "/api/accounts/" + req.session.data.accounts._id, {
+            id: req.session.data.accounts._id,
+            balance: req.session.data.accounts.balance - post_data.amount,
+        }, { headers })
+            .catch(err => console.log("Update acc balance err", err))
         await axios.post(
             `${server_base_url}/api/transactions`,
             post_data,

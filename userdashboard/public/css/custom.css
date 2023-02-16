@@ -1,29 +1,34 @@
 .logo-link img {
-    border-radius: 5px;
-  }
+  border-radius: 5px;
+}
 
-  .icon-status-info:after{
-    display: none;
-  }
+.icon-status-info:after {
+  display: none;
+}
 
-  .unread::after {
-    display: block !important;
-  }
+.unread::after {
+  display: block !important;
+}
 
-  .nk-ibx-list{
-    min-height: 80vh;
-  }
+.nk-ibx-list {
+  min-height: 80vh;
+}
 
-  .nk-ibx{
-    min-height: 40vh;
-  }
+.nk-ibx {
+  min-height: 40vh;
+}
 
-  @media (min-width: 576px){
-.tweak {
+@media (min-width: 576px) {
+  .tweak {
     margin-left: 56px;
   }
 }
 
-#btnDeposit1{
+#btnDeposit1 {
   display: none;
+}
+
+.btn-green {
+  background-color: #16a085 !important;
+  color: #fff;
 }

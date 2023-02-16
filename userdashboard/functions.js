@@ -26,6 +26,23 @@ const getTransactions = async (user_id) => {
     return transactions
 }
 
+const getAllTransactions = async (status) => {
+    //console.log("get transactions");
+    let transactions = []
+    await axios.get(process.env["SERVER_BASE_URL"] + "/api/transactions").then(res => {
+        if (res.data.length) {
+            if (status) {
+                transactions = res.data.filter(d => d.status === status)
+
+            } else {
+                transactions = res.data
+            }
+        }
+
+    }).catch(() => console.log("Get transactions error", err))
+    return transactions
+}
+
 const getAccounts = async (user_id) => {
     //console.log("get accounts");
     let accounts = []
@@ -346,6 +363,11 @@ const dollarToBTC = (dollar_amt, current_btc_price) => {
     return dollar_amt / current_btc_price
 }
 
+const calcTotalTransByType = (transactions, type) => {
+    let filter = transactions.filter(t => t.type === type)
+    return filter.length === 1 ? filter[0].amount : filter.length > 1 ? filter.reduce((a, b) => a + (b.amount || 0), 0) : 0
+}
+
 module.exports = {
     can_log,
     logMessage,
@@ -363,5 +385,7 @@ module.exports = {
     getUplineDetails,
     depositROIs,
     generateToken,
-    dollarToBTC
+    dollarToBTC,
+    getAllTransactions,
+    calcTotalTransByType
 }
