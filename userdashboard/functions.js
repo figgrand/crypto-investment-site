@@ -31,7 +31,9 @@ const getAllTransactions = async (status) => {
     let transactions = []
     await axios.get(process.env["SERVER_BASE_URL"] + "/api/transactions").then(res => {
         if (res.data.length) {
-            if (status) {
+            if (status === "others") {
+                transactions = res.data.filter(d => d.status !== "pending")
+            } else if (status === "pending") {
                 transactions = res.data.filter(d => d.status === status)
 
             } else {

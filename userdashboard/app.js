@@ -19,9 +19,9 @@ var server_base_url = isProd
     ? process.env["SERVER_BASE_PROD_URL"]
     : process.env["SERVER_BASE_URL"];
 
-console.log({
-    website_url, user_board_url, server_base_url
-});
+// console.log({
+//     website_url, user_board_url, server_base_url
+// });
 
 var session = require("express-session");
 var flash = require("connect-flash");
@@ -367,6 +367,7 @@ app.post("/auth", async (req, res) => {
         sess.password = password
         sess.token = resp.data.token;
         sess.user = JSON.stringify(resp.data.user)
+        
         response.success = true
         response.data = resp.data
         const is_admin = sess.user && JSON.parse(sess.user).role.includes("admin")
@@ -384,13 +385,15 @@ app.post("/auth", async (req, res) => {
         console.log({ user_has_account, is_admin });
 
         if (is_admin) {
+            sess.page = "admin"
             const approved_transactions = await functions.getAllTransactions("approved");
-            const pending_transactions = await (await functions.getAllTransactions("pending")).filter(i => i.type !== "referral_bonus")
+            const pending_transactions = await (await functions.getAllTransactions("pending")).filter(i => i.type !== "referral_bonus");
+            const other_transactions = await (await functions.getAllTransactions("others")).filter(i => i.type !== "referral_bonus")
             const total_deposit = await functions.calcTotalTransByType(approved_transactions, "deposit");
             const total_withdrawn = await functions.calcTotalTransByType(approved_transactions, "withdrawal");
             const total_invested = await functions.calcTotalTransByType(approved_transactions, "investment");
             data["admin"] = {
-                total_deposit, total_withdrawn, total_invested, pending_transactions
+                total_deposit, total_withdrawn, total_invested, pending_transactions, other_transactions
             }
         }
 
@@ -446,7 +449,7 @@ app.get("/admin", async (req, res) => {
     //console.log("user role", sess.user.role, "parsed role", JSON.parse(sess.user).role);
     if (sess.email && sess.password && (sess.user && JSON.parse(sess.user).role.includes("admin"))) {
         const data = sess.data;
-        const { total_deposit, total_withdrawn, total_invested, pending_transactions } = data.admin
+        const { total_deposit, total_withdrawn, total_invested, pending_transactions, other_transactions } = data.admin
         console.log("show data.admin");
         console.log(data.admin);
         res.render(path + "/admin", {
@@ -456,7 +459,8 @@ app.get("/admin", async (req, res) => {
             total_deposit,
             total_withdrawn,
             total_invested,
-            pending_transactions
+            pending_transactions,
+            other_transactions
             // notifications
         });
     } else {
@@ -742,6 +746,40 @@ app.post("/deposit", async (req, res) => {
         ])
         res.send(response)
     }
+})
+
+app.put("/update-transaction", async (req, res) => {
+    console.log("req.body.id", req.body.id);
+    const response = { success: false }
+    if (req.session.user){
+        let headers = {
+            "Content-type": "application/json",
+            "x-auth-token": req.session.token
+        }
+
+        let data = {
+            id: req.body.id,
+            status: req.body.status,
+            modifier: {
+                id: JSON.parse(req.session.user)._id,
+                firstname: JSON.parse(req.session.user).firstname,
+                lastname: JSON.parse(req.session.user).lastname,
+                email: JSON.parse(req.session.user).email
+            },
+            date_modified: new Date().toISOString()
+        }
+
+        console.log(data);
+         await axios.put(server_base_url
+        + "/api/transactions/" + req.body.id, 
+        data, { headers }).then(resp => {
+            response.success = true;
+            response.data = resp.data;
+            response.data._id = response.data.type = response.data.date_created = response.data.date_modified = undefined;
+        })
+        .catch(err => console.log("Update transaction err", err))
+    }
+    res.send(response)
 })
 
 app.get("/withdraw", async (req, res) => {
