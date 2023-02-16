@@ -1,0 +1,143 @@
+             
+                 <%- include('header', {user: data.user, notifications: data.user.notifications}) -%>         
+              
+                <div class="nk-content p-0">
+                    <div class="nk-content-inner">
+                        <div class="nk-content-body">
+                            <div class="nk-ibx">
+                              
+                                <div class="nk-ibx-body bg-white">
+                                    <div class="nk-ibx-head">
+                                        <div class="nk-ibx-head-actions">
+                                            <!-- <div class="nk-ibx-head-check">
+                                                <div class="custom-control custom-control-sm custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input nk-dt-item-check" id="conversionAll">
+                                                    <label class="custom-control-label" for="conversionAll"></label>
+                                                </div>
+                                            </div> -->
+                                            <ul class="nk-ibx-head-tools g-1">
+                                                <li><a href="#" class="btn btn-icon btn-trigger"><em class="icon ni ni-undo"></em></a></li>
+                                                <li class="d-none d-sm-block"><a href="#" class="btn btn-icon btn-trigger"><em class="icon ni ni-archived"></em></a></li>
+                                                <li class="d-none d-sm-block"><a href="#" class="btn btn-icon btn-trigger"><em class="icon ni ni-trash"></em></a></li>
+                                                <li>
+                                                    <div class="dropdown">
+                                                        <a href="#" class="dropdown-toggle btn btn-icon btn-trigger" data-bs-toggle="dropdown"><em class="icon ni ni-more-v"></em></a>
+                                                        <div class="dropdown-menu">
+                                                            <ul class="link-list-opt no-bdr">
+                                                                <li><a class="dropdown-item" href="#"><em class="icon ni ni-eye"></em><span>Move to</span></a></li>
+                                                                <li><a class="dropdown-item" href="#"><em class="icon ni ni-trash"></em><span>Delete</span></a></li>
+                                                                <li><a class="dropdown-item" href="#"><em class="icon ni ni-archived"></em><span>Archive</span></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <ul class="nk-ibx-head-tools g-1">
+                                                <li><a href="#" class="btn btn-trigger btn-icon btn-tooltip" title="Prev Page"><em class="icon ni ni-arrow-left"></em></a></li>
+                                                <li><a href="#" class="btn btn-trigger btn-icon btn-tooltip" title="Next Page"><em class="icon ni ni-arrow-right"></em></a></li>
+                                                <!-- <li><a href="#" class="btn btn-trigger btn-icon search-toggle toggle-search" data-target="search"><em class="icon ni ni-search"></em></a></li> -->
+                                                <li class="me-n1 d-lg-none"><a href="#" class="btn btn-trigger btn-icon toggle" data-target="inbox-aside"><em class="icon ni ni-menu-alt-r"></em></a></li>
+                                            </ul>
+                                        </div>
+                  
+                                    </div>
+                                    <div class="nk-ibx-view show-ibx">
+                                        <div class="nk-ibx-head">
+                                            <div class="nk-ibx-head-actions">
+                                                <ul class="nk-ibx-head-tools g-1">
+                                                    <li class="ms-n2"><a href="/notifications" class="btn btn-icon btn-trigger nk-ibx-hide"><em class="icon ni ni-arrow-left"></em></a></li>
+                                                    <li><a href="#" class="btn btn-icon btn-trigger btn-tooltip" title="Archive"><em class="icon ni ni-archived"></em></a></li>
+                                                    <li class="d-none d-sm-block"><a href="#" class="btn btn-icon btn-trigger btn-tooltip" title="Mark as Spam"><em class="icon ni ni-report"></em></a></li>
+                                                    <li><a href="#" class="btn btn-icon btn-trigger btn-tooltip" title="Delete"><em class="icon ni ni-trash"></em></a></li>
+                                                    <li><a href="#" class="btn btn-icon btn-trigger btn-tooltip" title="Label"><em class="icon ni ni-label"></em></a></li>
+                                                    <li>
+                                                        <div class="dropdown">
+                                                            <a href="#" class="dropdown-toggle btn btn-icon btn-trigger" data-bs-toggle="dropdown"><em class="icon ni ni-more-v"></em></a>
+                                                            <div class="dropdown-menu">
+                                                                <ul class="link-list-opt no-bdr">
+                                                                    <li><a class="dropdown-item" href="#"><span>Mark as unread</span></a></li>
+                                                                    <li><a class="dropdown-item" href="#"><span>Mark as not important</span></a></li>
+                                                                    <li><a class="dropdown-item" href="#"><span>Archive this message</span></a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="nk-ibx-head-actions">
+                                                <ul class="nk-ibx-head-tools g-1">
+                                                    <li class="d-none d-sm-block"><a href="#" class="btn btn-icon btn-trigger btn-tooltip" title="Prev"><em class="icon ni ni-chevron-left"></em></a></li>
+                                                    <li class="d-none d-sm-block"><a href="#" class="btn btn-icon btn-trigger btn-tooltip" title="Next"><em class="icon ni ni-chevron-right"></em></a></li>
+                                                    <li class="me-n1 me-lg-0"><a href="#" class="btn btn-icon btn-trigger search-toggle toggle-search" data-target="search"><em class="icon ni ni-search"></em></a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="search-wrap" data-search="search">
+                                                <div class="search-content">
+                                                    <a href="#" class="search-back btn btn-icon toggle-search" data-target="search"><em class="icon ni ni-arrow-left"></em></a>
+                                                    <input type="text" class="form-control border-transparent form-focus-none" placeholder="Search by user or message">
+                                                    <button class="search-submit btn btn-icon"><em class="icon ni ni-search"></em></button>
+                                                </div>
+                                            </div><!-- .search-wrap -->
+                                        </div><!-- .nk-ibx-head -->
+                                        <div class="nk-ibx-reply nk-reply">
+                                         
+                                            <div class="nk-ibx-reply-group">
+                                                <div class="nk-ibx-reply-item nk-reply-item">
+                                                    
+                                                    <div class="nk-reply-header nk-ibx-reply-header">
+                                                        <div class="nk-reply-desc">
+                                                            <div class="nk-reply-avatar user-avatar bg-blue">
+                                                                <span> <%= data.user.firstname[0] + data.user.lastname[0] %>  </span>
+                                                            </div>
+                                                            <div class="nk-reply-info">
+                                                                <div class="nk-reply-author lead-text"> <%= notification.title %>  <span class="date d-sm-none">  </span></div>
+                                                            
+                                                                <div class="nk-reply-msg-excerpt">
+                                                                    <%= notification.description %>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <ul class="nk-reply-tools g-1">
+                                                            <!-- <li class="attach-msg"><em class="icon ni ni-clip-h"></em></li> -->
+                                                            <li class="date-msg"><span class="date"> <%= notification.time_diff %></span></li>
+                                                            <!-- <li class="replyto-msg"><a href="#" class="btn btn-trigger btn-icon btn-tooltip" title="Reply"><em class="icon ni ni-curve-up-left"></em></a></li>
+                                                            <li class="more-actions">
+                                                                <div class="dropdown">
+                                                                    <a href="#" class="dropdown-toggle btn btn-trigger btn-icon" data-bs-toggle="dropdown"><em class="icon ni ni-more-v"></em></a>
+                                                                    <div class="dropdown-menu dropdown-menu-end">
+                                                                        <ul class="link-list-opt no-bdr">
+                                                                            <li><a class="dropdown-item" href="#"><em class="icon ni ni-reply-fill"></em><span>Reply to</span></a></li>
+                                                                            <li><a class="dropdown-item" href="#"><em class="icon ni ni-forward-arrow-fill"></em><span>Forward</span></a></li>
+                                                                            <li><a class="dropdown-item" href="#"><em class="icon ni ni-trash-fill"></em><span>Delete this</span></a></li>
+                                                                            <li><a class="dropdown-item" href="#"><em class="icon ni ni-report-fill"></em><span>Report Spam</span></a></li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </li> -->
+                                                        </ul>
+                                                    </div>
+                                                    <div class="nk-reply-body nk-ibx-reply-body">
+                                                        <div class="nk-reply-entry entry">
+                                                            <p>  <%= notification.description %> </p>
+                                                            
+                                                        </div>
+                                                     
+                                                    </div>
+                                                </div>
+                                            
+                                        </div><!-- .nk-reply -->
+                                    </div>
+                                </div><!-- .nk-ibx-body -->
+                            </div><!-- .nk-ibx -->
+                        </div>
+                    </div>
+                </div>
+                <!-- content @e -->
+            </div>
+            <!-- wrap @e -->
+        </div>
+        <!-- main @e -->
+    </div>
+<%- include('footer', {website: data.website}) -%>

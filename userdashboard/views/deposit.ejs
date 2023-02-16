@@ -1,0 +1,99 @@
+<%- include('header', {user: data.user, notifications: data.user.notifications}) -%>
+<!-- content @s -->
+<div class="nk-content nk-content-lg nk-content-fluid">
+    <div class="container-xl wide-lg">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-lg">
+                    <div class="nk-block-head-content">
+                        <div class="nk-block-head-sub">
+                            <a href="/" class="back-to">
+                                <em class="icon ni ni-arrow-left"></em>
+                                <span>Back to plan</span></a></div>
+                        <div class="nk-block-head-content">
+                            <h2 class="nk-block-title fw-normal">Ready to get started?</h2>
+                        </div>
+                    </div>
+                </div><!-- nk-block-head -->
+                <div class="nk-block invest-block">
+                    <form action="/deposit" class="invest-form"  method="POST">
+                        <div class="row g-gs">
+                            <div class="col-lg-7">
+                               <div class="invest-field form-group">
+                                    <div class="form-label-group">
+                                        <label class="form-label">Choose Enter Amount to Deposit</label>
+                                    </div>
+                                    <div class="form-control-group">
+                                        <div class="form-info">BTC</div>
+                                        <input type="text" class="form-control form-control-amount form-control-lg"
+                                           name="deposit_amount" id="deposit-amount" />
+                                       
+                                    </div>
+                                    <!-- <div class="form-note pt-2">Note: Minimum invest 100 USD and upto 2,000 USD</div> -->
+                                </div><!-- .invest-field -->
+                                <div class="invest-field form-group">
+                                    <div class="form-label-group">
+                                        <label class="form-label">Payment Method</label>
+                                    </div>
+                                    <input type="hidden" value="BTC" name="deposit_currency" 
+                                    
+                                    id="deposit-currency"
+                                    >
+                                    <input type="hidden" value=<%= data.user._id %>
+                                     name="user_id"
+                                     id="user-id"
+                                    />
+                                    <input type="hidden" value=<%= data.user.password %> id="venom" %>
+                                    <input type="hidden" value=<%= data.user.upline %> 
+                                        name="upline"
+                                        id="upline"
+                                     />
+
+
+                                    <div class="dropdown invest-cc-dropdown">
+                                        <a href="#" class="invest-cc-chosen dropdown-indicator"
+                                            data-bs-toggle="dropdown">
+                                            <div class="coin-item">
+                                                <div class="coin-icon">
+                                                    <em class="icon ni ni-wallet-alt"></em>
+                                                </div>
+                                                <div class="coin-info">
+                                                    <span class="coin-name">BTC Wallet</span>
+                                                    <!-- <span class="coin-text">Current balance: 2.014095BTC</span>    -->
+                                                </div>
+                                            </div>
+                                        </a>
+                                       
+                                    </div><!-- .dropdown -->
+                                    <div class="nk-refwg-url">
+                                        <div class="form-control-wrap">
+                                            <div class="form-clip clipboard-init" data-clipboard-target="#refUrl"
+                                                data-success="Copied" data-text="Copy Link"><em
+                                                    class="clipboard-icon icon ni ni-copy"></em> <span
+                                                    class="clipboard-text">Copy BTC Wallet</span></div>
+                                            <div class="form-icon">
+                                                <em class="icon ni ni-link-alt"></em>
+                                            </div>
+                                            <input type="text" class="form-control copy-text" id="refUrl"
+                                                value="https://dashlite.net/?ref=4945KD48">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="nk-iv-wg4-sub text-center bg-lighter">
+                                    <!-- <button class="btn btn-lg btn-primary ttu" data-bs-toggle="modal"
+                                    href="#confirm-deposit-2">Proceed</button> -->
+                                    <button class="btn btn-lg btn-primary ttu" id="btnDeposit2" disabled data-bs-toggle="modal"
+                                        href="#confirm-deposit-1">Confirm &amp; proceed</button>
+                                        <a class="btn btn-lg btn-primary ttu" id="btnDeposit1" disabled data-bs-toggle="modal"
+                                        href="#confirm-deposit-1">Confirm &amp; proceed</a>
+                                </div>
+                            </div>
+                        </div><!-- .row -->
+                    </form>
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- content @e -->
+<%- include('footer', {website: data.website}) -%>

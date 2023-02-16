@@ -1,0 +1,163 @@
+
+- [x]  move login and register to user_dashboard app
+- [x]  prevent double clicking of signup and sign in button
+- [x]  show invalid login credentials error on login page
+- [x] refactor code. remove irrelevant redirects
+- [x] remove hardcoded data in investment card on dashboard
+- [x] add upline to user account
+- [x] add referral code to user account
+- [x] create referrals schema
+- [x] remove hardcoded notifications
+- [ ] create account when admin confirms deposit for users with no account and update account balance if user has one
+- []  update notification status when opened 
+- [ ] implement logic to update upline account balance when downline deposits
+- [ ] add duration to investment
+- [ ] modify transations schema
+- [ ] add withdraw funds functionality
+- [ ] add copiable popup to Refer friend link
+- [ ] add invest & earn functionality
+- [ ] add deposit funds functionality
+- [ ]  change investment plans on user dashboard
+- [ ] fix my plan page
+- [ ] fix profile page
+- [ ] fix notifications
+- [ ]  implement forgot password
+- [ ]  implement contact page  functionality
+- [ ]  implement footer contact functionality
+- [ ]  implement referral functionality
+- [ ]  implement change password
+- [ ]  add referral code to registration i.e generate referral code in server
+- [ ]  add uplines to user-details GET API
+- [ ]  add downlines to user-details GET API
+- [ ]  show btc wallet on popup when user clicks the final investment button
+- [ ]  when admin receives btc deposit, credit the user's balance
+- [ ]  send deposit confirmation mail to user when admin verifies deposit
+- [ ]  credit upline if downline's deposit is approved
+- [ ]  send mail to upline if downline's deposit is approved
+- [ ]  provide screen for user to specify how much he wants to withdraw
+- [ ]  provide screen for user to enter wallet address to receive withdrawal
+- [ ]  send withdrawal request notification email to admin
+- [ ]  implement withdrawal approval or rejection on admin page
+- [ ]  implement deposit confirmation in admin page
+- [ ]  send withdrawal status mail to user - approval or rejection
+- [ ]  implement admin dashboard
+- [ ] 
+
+
+
+1. create company website - ejs
+
+   - implement register - done
+   - implement login - done
+   - save access token to local storage - done
+   - send welcome mail upon sucessful registration
+
+2. create user dashboard - react
+   - enforce auth if not signed in
+   - implement forget password
+   - create mongo models for dashboard data
+   - create api for user dashboard actions
+    
+3. create admin dashboard - react
+https://dashlite.net/demo5/transaction-crypto.html
+
+
+[] prevent double clicking of signup and sign in button
+[] show invalid login credentials error on login page
+[] change investment plans on user dashboard
+[] implement forgot password
+[] implement contact page  functionality
+[] implement footer contact functionality
+[] implement referral functionality
+[] implement change password
+[] add referral code to registration i.e generate referral code in server
+[] add uplines to user-details GET API
+[] add downlines to user-details GET API
+[] show btc wallet on popup when user clicks the final investment button
+[] when admin receives btc deposit, credit the user's balance
+[] send deposit confirmation mail to user when admin verifies deposit
+[] credit upline if downline's deposit is approved
+[] send mail to upline if downline's deposit is approved
+[] provide screen for user to specify how much he wants to withdraw
+[] provide screen for user to enter wallet address to receive withdrawal
+[] send withdrawal request notification email to admin
+[] implement withdrawal approval or rejection on admin page
+[] implement deposit confirmation in admin page
+[] send withdrawal status mail to user - approval or rejection
+[] move login and register to user_dashboard app
+[] implement admin dashboard
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]
+[]

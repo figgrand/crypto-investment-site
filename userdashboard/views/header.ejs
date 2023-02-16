@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Softnio">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description"
+        content="A powerful and conceptual apps base dashboard template that especially build for developers and programmers.">
+    <!-- Fav Icon  -->
+    <link rel="shortcut icon" href="images/favicon.png">
+    <!-- Page Title  -->
+    <title>Investment Dashboard | DashLite Admin Template</title>
+    <!-- StyleSheets  -->
+    <link rel="stylesheet" href="css/dashlite.css?ver=3.0.3">
+    <link rel="stylesheet" href="css/custom.css">
+
+    <link id="skin-default" rel="stylesheet" href="css/theme.css?ver=3.0.3">
+</head>
+
+<body class="nk-body npc-invest bg-lighter">
+    <div class="nk-app-root">
+        <!-- wrap @s -->
+        <div class="nk-wrap ">
+            <!-- main header @s -->
+            <div class="nk-header nk-header-fluid nk-header-fixed is-theme">
+                <div class="container-xl wide-lg">
+                    <div class="nk-header-wrap">
+                        <div class="nk-menu-trigger me-sm-2 d-lg-none">
+                            <a href="#" class="nk-nav-toggle nk-quick-nav-icon" data-target="headerNav"><em
+                                    class="icon ni ni-menu"></em></a>
+                        </div>
+                        <div class="nk-header-brand">
+                            <a href="/" class="logo-link">
+                                <img class="logo-light logo-img" src="images/logo.jpeg" srcset="images/logo.jpeg 2x"
+                                    alt="logo">
+                                <img class="logo-dark logo-img" src="images/logo.jpeg"
+                                    srcset="images/logo.jpeg 2x" alt="logo-dark">
+                                <!-- <span class="nio-version">Invest</span> -->
+                            </a>
+                        </div><!-- .nk-header-brand -->
+                        <div class="nk-header-menu" data-content="headerNav">
+                            <div class="nk-header-mobile">
+                                <div class="nk-header-brand">
+                                    <a href="/" class="logo-link">
+                                        <img class="logo-light logo-img" src="images/logo.jpeg"
+                                            srcset="images/logo.jpeg 2x" alt="logo">
+                                        <img class="logo-dark logo-img" src="images/logo.jpeg"
+                                            srcset="images/logo.jpeg 2x" alt="logo-dark">
+                                        <span class="nio-version">Invest</span>
+                                    </a>
+                                </div>
+                                <div class="nk-menu-trigger me-n2">
+                                    <a href="#" class="nk-nav-toggle nk-quick-nav-icon" data-target="headerNav"><em
+                                            class="icon ni ni-arrow-left"></em></a>
+                                </div>
+                            </div>
+                            <!-- Menu -->
+                            <ul class="nk-menu nk-menu-main">
+                                <li class="nk-menu-item" id="home">
+                                    <a href="/" class="nk-menu-link">
+                                        <span class="nk-menu-text">Overview</span>
+                                    </a>
+                                </li>
+                                <li class="nk-menu-item">
+                                    <a href="/plans" class="nk-menu-link">
+                                        <span class="nk-menu-text">MY Plan</span>
+                                    </a>
+                                </li>
+                                <li class="nk-menu-item">
+                                    <a href="/invest" class="nk-menu-link">
+                                        <span class="nk-menu-text">Invest</span>
+                                    </a>
+                                </li>
+                                <li class="nk-menu-item">
+                                    <a href="/profile" class="nk-menu-link">
+                                        <span class="nk-menu-text">Profile</span>
+                                    </a>
+                                </li>
+                            
+                            </ul>
+                        </div><!-- .nk-header-menu -->
+                        <div class="nk-header-tools">
+                            <ul class="nk-quick-nav">
+                                <li class="dropdown notification-dropdown">
+                                    <a href="#" class="dropdown-toggle nk-quick-nav-icon" data-bs-toggle="dropdown">
+                                        <div class=" <%= `icon-status icon-status-info ${notifications.unread_count > 0 ? "unread" : ""}` %>"><em class="icon ni ni-bell"></em>
+                                        </div>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-xl dropdown-menu-end dropdown-menu-s1">
+                                        <div class="dropdown-head">
+                                            <span class="sub-title nk-dropdown-title">Notifications</span>
+                                            <% if (notifications.unread_count > 2) { %>
+                                            <a href="#">Mark All as Read</a>
+                                            <% } %>
+                                        </div>
+                                        <div class="dropdown-body">
+                                            <div class="nk-notification">
+                                                <% for (let i = 0; i < notifications.data.length; i++) { %>
+                                                    <a href=<%= "/notifications?id=" + notifications.data[i]._id %> >
+                                                           <div class="nk-notification-item dropdown-inner">
+                                                            <div class="nk-notification-icon">
+                                                                <em
+                                                                    class= "<%= `icon icon-circle ni ${true ? "bg-warning-dim ni-curve-down-right": "bg-success-dim ni-curve-down-lef"}` %>"></em>
+                                                            </div>
+                                                            <div class="nk-notification-content">
+                                                                <div class="nk-notification-text"><%= notifications.data[i].title %></div>
+                                                                <div class="nk-notification-time"><%= notifications.data[i].time_diff %></div>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                     
+                                                   <% } %>
+
+                                            </div><!-- .nk-notification -->
+                                        </div><!-- .nk-dropdown-body -->
+                                        <% if (notifications.unread_count > 2) { %>
+                                        <div class="dropdown-foot center">
+                                            <a href="/notifications">View All</a>
+                                        </div>
+                                        <% } %>
+                                    </div>
+                                </li><!-- .dropdown -->
+                                <li class="dropdown language-dropdown d-none d-sm-flex me-n1">
+                                    <a href="#" class="dropdown-toggle nk-quick-nav-icon" data-bs-toggle="dropdown">
+                                        <div class="quick-icon">
+                                            <img class="icon" src="images/flags/english-sq.png" alt="">
+                                        </div>
+                                    </a>
+                                    <!-- <div class="dropdown-menu dropdown-menu-end dropdown-menu-s1">
+                                        <ul class="language-list">
+                                            <li>
+                                                <a href="#" class="language-item">
+                                                    <img src="images/flags/english.png" alt="" class="language-flag">
+                                                    <span class="language-name">English</span>
+                                                </a>
+                                            </li>
+                                          <li>
+                                                <a href="#" class="language-item">
+                                                    <img src="images/flags/spanish.png" alt="" class="language-flag">
+                                                    <span class="language-name">Español</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#" class="language-item">
+                                                    <img src="images/flags/french.png" alt="" class="language-flag">
+                                                    <span class="language-name">Français</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#" class="language-item">
+                                                    <img src="images/flags/turkey.png" alt="" class="language-flag">
+                                                    <span class="language-name">Türkçe</span>
+                                                </a>
+                                            </li> 
+                                        </ul>
+                                    </div> -->
+                                </li><!-- .dropdown -->
+                                <li class="hide-mb-sm"><a href="/logout" class="nk-quick-nav-icon"><em
+                                            class="icon ni ni-signout"></em></a></li>
+                                <li class="dropdown user-dropdown order-sm-first">
+                                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
+                                        <div class="user-toggle">
+                                            <div class="user-avatar sm">
+                                                <em class="icon ni ni-user-alt"></em>
+                                            </div>
+                                            <div class="user-info d-none d-xl-block">
+                                                <!-- <div class="user-status user-status-unverified">Unverified</div> -->
+                                                <div class="user-name dropdown-indicator"><%= user.firstname + " " + user.lastname %></div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <div
+                                        class="dropdown-menu dropdown-menu-md dropdown-menu-end dropdown-menu-s1 is-light">
+                                        <div class="dropdown-inner user-card-wrap bg-lighter d-none d-md-block">
+                                            <div class="user-card">
+                                                <div class="user-avatar">
+                                                    <span> <%= user.firstname[0] %><%= user.lastname[0] %> </span>
+                                                </div>
+                                                <div class="user-info">
+                                                    <span class="lead-text">
+                                                        <%= user.firstname + " " + user.lastname %>
+                                                    </span>
+                                                    <span class="sub-text"><%= user.email %></span>
+                                                </div>
+                                                <div class="user-action">
+                                                    <a class="btn btn-icon me-n2"
+                                                        href="/profile-setting"><em
+                                                            class="icon ni ni-setting"></em></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown-inner user-account-info">
+                                            <h6 class="overline-title-alt">Account Balance</h6>
+                                            <div class="user-balance"> <%= data.available_balance %>  <small
+                                                    class="currency currency-usd">BTC</small></div>
+                                            <div class="user-balance-sub">Locked <span><%= data.total_invested %> <span
+                                                        class="currency currency-usd">BTC</span></span></div>
+                                            <a href="/withdraw" class="link"><span>Withdraw Balance</span> <em
+                                                    class="icon ni ni-wallet-out"></em></a>
+                                        </div>
+                                        <div class="dropdown-inner">
+                                            <ul class="link-list">
+                                                <li><a href="/profile"><em
+                                                            class="icon ni ni-user-alt"></em><span>View
+                                                            Profile</span></a></li>
+                                                <li><a href="/profile-setting"><em
+                                                            class="icon ni ni-setting-alt"></em><span>Account
+                                                            Setting</span></a></li>
+                                                <!-- <li><a href="html/invest/profile-activity.html"><em
+                                                            class="icon ni ni-activity-alt"></em><span>Login
+                                                            Activity</span></a></li> -->
+                                                <li><a class="dark-switch" href="#"><em
+                                                            class="icon ni ni-moon"></em><span>Dark Mode</span></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="dropdown-inner">
+                                            <ul class="link-list">
+                                                <li><a href="/logout"><em class="icon ni ni-signout"></em><span>Sign
+                                                            out</span></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li><!-- .dropdown -->
+                            </ul><!-- .nk-quick-nav -->
+                        </div><!-- .nk-header-tools -->
+                    </div><!-- .nk-header-wrap -->
+                </div><!-- .container-fliud -->
+            </div>

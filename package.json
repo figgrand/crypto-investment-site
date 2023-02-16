@@ -1,0 +1,10 @@
+{
+    "scripts": {
+        "prod": "(cd server && node server.js) & (cd website-ejs && node app.js) & (cd userdashboard && node app.js)",
+        "dev": "(cd server && npm run dev) & (cd website-ejs && npm run dev) & (cd userdashboard && npm run dev)"
+    },
+    "dependencies": {
+        "dotenv": "^16.0.3",
+        "referral-codes": "^2.0.3"
+    }
+}

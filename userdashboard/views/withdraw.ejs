@@ -1,0 +1,64 @@
+<%- include('header', {user: data.user, notifications: data.user.notifications}) -%>
+<!-- content @s -->
+<div class="nk-content nk-content-lg nk-content-fluid">
+    <div class="container-xl wide-lg">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-lg">
+                    <div class="nk-block-head-content">
+                        <div class="nk-block-head-sub">
+                            <a href="/" class="back-to">
+                                <em class="icon ni ni-arrow-left"></em>
+                                <span>Back to plan</span></a></div>
+                        <div class="nk-block-head-content">
+                            <h2 class="nk-block-title fw-normal">Withdraw funds</h2>
+                        </div>
+                    </div>
+                </div><!-- nk-block-head -->
+                <div class="nk-block invest-block">
+                    <!-- <form action="/withdraw" class="invest-form"  method="POST"> -->
+                        <div class="row g-gs">
+                            <div class="col-lg-7">
+                                <div class="invest-field form-group">
+                                    <div class="form-label-group">
+                                        <label class="form-label">Enter Amount to Withdraw</label>
+                                    </div>
+                                    <div class="form-control-group">
+                                        <div class="form-info">BTC</div>
+                                        <input type="hidden" value=<%= data.user._id %> name="user_id" id="user-id" />
+                                        <input type="hidden" value=<%= "BTC" %> name="currency" id="currency" />
+                                        <input type="text" class="form-control form-control-amount form-control-lg"
+                                           name="withdraw_amount" id="withdraw-amount" />
+                                        <!-- <div class="form-range-slider" id="amount-step"></div> -->
+                                    </div>
+                                    <!-- <div class="form-note pt-2">Note: Minimum invest 100 USD and upto 2,000 USD</div> -->
+                                </div>
+                                
+                                <div class="invest-field form-group">
+                                    <div class="form-label-group">
+                                        <label class="form-label">Paste BTC wallet address</label>
+                                    </div>
+                                    <div class="form-control-group">
+                                        <div class="form-info">Address</div>
+                                        <input type="text" class="form-control form-control-amount form-control-lg"
+                                           name="btc_wallet" id="btc-wallet" >
+                                        <!-- <div class="form-range-slider" id="amount-step"></div> -->
+                                    </div>
+                                    <!-- <div class="form-note pt-2">Note: Minimum invest 100 USD and upto 2,000 USD</div> -->
+                                </div><!-- .invest-field -->
+                       
+                                <div class="nk-iv-wg4-sub text-center bg-lighter">
+                               
+                                    <button class="btn btn-lg btn-primary ttu" data-bs-toggle="modal" id = "btn-withdraw"
+                                        href="#confirm-withdrawal" disabled>Confirm &amp; proceed</button>
+                                </div>
+                            </div>
+                        </div>
+                    <!-- </form> -->
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- content @e -->
+<%- include('footer', {website: data.website}) -%>

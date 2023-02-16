@@ -1,0 +1,92 @@
+<%- include('header', {user: data.user, notifications: data.user.notifications}) -%>
+<!-- content @s -->
+<div class="nk-content nk-content-lg nk-content-fluid">
+    <div class="container-xl wide-lg">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-lg">
+                    <div class="nk-block-head-content">
+                        <div class="nk-block-head-sub"><a href="/invest" class="back-to"><em
+                                    class="icon ni ni-arrow-left"></em><span>Back to plan</span></a>
+                        </div>
+                        <div class="nk-block-head-content">
+                            <h2 class="nk-block-title fw-normal">Ready to get started?</h2>
+                        </div>
+                    </div>
+                </div><!-- nk-block-head -->
+                <div class="nk-block invest-block">
+                    <!-- <form action="/invest" class="invest-form" method="POST"> -->
+                        <div class="row g-gs">
+                            <div class="col-lg-7">
+                                <div class="invest-field form-group">
+                                    <input type="hidden" value=<%= selected_plan.id %> name="iv-plan" id="invest-choose-plan">
+                                    <div class="dropdown invest-cc-dropdown">
+                                        <a href="#" class="invest-cc-chosen dropdown-indicator"
+                                            data-bs-toggle="dropdown">
+                                            <div class="coin-item">
+                                                <div class="coin-icon">
+                                                    <em class="icon ni ni-offer-fill"></em>
+                                                </div>
+                                                <div class="coin-info">
+                                                    <span class="coin-name"> <%= selected_plan.name %> Plan</span>
+                                                    <span class="coin-text"><%= selected_plan.desc_2 %> </span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                     </div>
+                                </div>
+                                <div class="invest-field form-group">
+                                    <div class="form-label-group">
+                                        <label class="form-label">Enter Amount to Invest</label>
+                                    </div>
+                                    <div class="form-control-group">
+                                        <div class="form-info">BTC</div>
+                                        <input type="number" class="form-control form-control-amount form-control-lg" 
+                                        name="inv_amount" id="inv-amount" required />
+                                        <input type="hidden" value=<%= data.available_balance %>  id="balance" />
+                                        <input type="hidden" value=<%= data.user._id %> name="user_id" id="user-id" />
+                                        <input type="hidden" value=<%= selected_plan.id %> name="plan_id" id="plan-id" />
+                                        <input type="hidden" value=<%= "BTC" %> name="currency" id="currency" />
+                                        <input type="hidden" value=<%= selected_plan.min_deposit %> id="min_deposit" />
+                                        <input type="hidden" value=<%= selected_plan.max_deposit %> id="max_deposit" />
+                                    </div>
+                                    <div class="" style="color: red;" id="input-err"></div>
+
+                                    <div class="form-note pt-2">Note: Minimum invest <%= selected_plan.min_deposit %> and upto <%= selected_plan.max_deposit %></div>
+                                </div>
+                            </div><!-- .col -->
+                            <div class="col-xl-4 col-lg-5 offset-xl-1">
+                                <div class="card card-bordered ms-lg-4 ms-xl-0">
+                                    <div class="nk-iv-wg4">
+                                        <div class="nk-iv-wg4-sub">
+                                            <h6 class="nk-iv-wg4-title title">Your Investment Details</h6>
+                                            <ul class="nk-iv-wg4-overview g-2">
+                                                <li>
+                                                    <div class="sub-text">Name of scheme</div>
+                                                    <div class="lead-text"><%= selected_plan.name %></div>
+                                                </li>
+                                                <li>
+                                                    <div class="sub-text">ROI</div>
+                                                    <div class="lead-text"><%= selected_plan.roi %> after <%= selected_plan.duration %></div>
+                                                </li>
+                                            </ul>
+                                        </div><div class="nk-iv-wg4-sub text-center bg-lighter">
+                                            <button class="btn btn-lg btn-primary ttu" id="btn-invest"
+                                            data-bs-toggle="modal" disabled
+                                            href="#confirm-invest"
+                                                >Confirm &amp; proceed</button>
+                                            <!-- <a class="btn btn-lg btn-primary ttu" id="btn-invest" data-bs-toggle="modal"
+                                                href="#confirm-invest">Confirm &amp; proceed</a> -->
+                                        </div><!-- .nk-iv-wg4-sub -->
+                                    </div><!-- .nk-iv-wg4 -->
+                                </div><!-- .card -->
+                            </div><!-- .col -->
+                        </div><!-- .row -->
+                    <!-- </form> -->
+                </div><!-- .nk-block -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- content @e -->
+<%- include('footer', {website: data.website}) -%>
