@@ -62,6 +62,13 @@
                                         <span class="nk-menu-text">Overview</span>
                                     </a>
                                 </li>
+                                <% if (user.role.includes("admin")) { %>
+                                    <li class="nk-menu-item">
+                                        <a href="/admin" class="nk-menu-link">
+                                            <span class="nk-menu-text">Admin</span>
+                                        </a>
+                                    </li>
+                                <% } %>
                                 <li class="nk-menu-item">
                                     <a href="/plans" class="nk-menu-link">
                                         <span class="nk-menu-text">MY Plan</span>
