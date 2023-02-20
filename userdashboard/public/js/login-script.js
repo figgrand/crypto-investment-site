@@ -50,7 +50,7 @@ const getToken = async () => {
     console.log({ res });
     return res.json();
   }).then(d => {
-    console.log({ d })
+    //console.log({ d })
     if (/*d.success*/d.token) {
       //window.localStorage.setItem("access_token", d.token);
       window.location.href = d.redirect;

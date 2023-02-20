@@ -370,6 +370,16 @@ const calcTotalTransByType = (transactions, type) => {
     return filter.length === 1 ? filter[0].amount : filter.length > 1 ? filter.reduce((a, b) => a + (b.amount || 0), 0) : 0
 }
 
+const updateSessionData = (prev, item) => {
+    let updated_data = {};
+
+    return updated_data
+}
+
+const fetchData = () => {
+
+}
+
 module.exports = {
     can_log,
     logMessage,
@@ -389,5 +399,7 @@ module.exports = {
     generateToken,
     dollarToBTC,
     getAllTransactions,
-    calcTotalTransByType
+    calcTotalTransByType,
+    updateSessionData,
+    fetchData
 }

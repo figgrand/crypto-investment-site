@@ -2,6 +2,15 @@ var express = require("express");
 const dotenv = require("dotenv");
 var axios = require("axios");
 var app = express();
+const socketio = require('socket.io');
+
+const emitters = [
+    "deposit-funds",
+    "invest-funds",
+    "withdraw-funds",
+    "open-notification",
+    "cancel-investment"
+]
 
 var path = __dirname + "/views";
 dotenv.config({ path: "../.env" });
@@ -343,6 +352,129 @@ app.post("/submit-registration", async (req, res) => {
     }
 })
 
+const fetchData = async (user) => {
+    const data = {};
+    const transactions = await functions.getTransactions(user._id);
+    const accounts = await functions.getAccounts(user._id);
+    const investments = await functions.getTotalInvestment(transactions, accounts);
+
+    const downlines = await functions.getDownlines(user.referral_code);
+    const upline_details = await functions.getUplineDetails(user.upline);
+    const ref_profits = functions.getRefProfits(transactions);
+    const notifications = await functions.getNotifications(user._id);
+
+    const is_admin = user && user.role.includes("admin")
+    const user_has_account = accounts && accounts.length ? true : false;
+    if (is_admin) {
+        sess.page = "admin"
+        const approved_transactions = await functions.getAllTransactions("approved");
+        const active_investments = await functions.getAllTransactions("active")
+        const pending_transactions = await (await functions.getAllTransactions("pending")).filter(i => i.type !== "referral_bonus");
+        const other_transactions = await (await functions.getAllTransactions("others")).filter(i => i.type !== "referral_bonus")
+        const total_deposit = await functions.calcTotalTransByType(approved_transactions, "deposit");
+        const total_withdrawn = await functions.calcTotalTransByType(approved_transactions, "withdrawal");
+        const total_invested = await functions.calcTotalTransByType(active_investments, "investment");
+        data["admin"] = {
+            total_deposit, total_withdrawn, total_invested, pending_transactions, other_transactions
+        }
+    }
+
+    data["available_balance"] = accounts && accounts.length ? accounts[0].balance : 0
+    data["total_invested"] = investments.total;
+    data["total_profits"] = investments.investment_profit + investments.referral_bonus;
+    data["account_balance"] = (accounts && accounts.length ? accounts[0].balance : 0) //+ investments.total;
+    data["this_month"] = {
+        profits: investments.this_month.profit,
+        referrals: investments.this_month.referral_bonus,
+        total: investments.this_month.profit,
+        investment_profit: investments.this_month.investment_profit
+    }
+    data["investments"] = {
+        total: investments.total,
+        count: investments.investments.length,
+        items: investments.investments,
+
+    }
+    data["accounts"] = accounts[0];
+    data["user"] = {
+        has_account: user_has_account,
+        ...user,
+        upline: upline_details,
+        notifications,
+        downlines,
+        ref_profits,
+        password: user.password,
+        ref_link: user_board_url + "/register?code=" + user.referral_code,
+    }
+    data["currency"] = accounts && accounts.length ? accounts[0].currency : "BTC"
+
+    data["website"] = website_url;
+
+    return data
+}
+
+/*app.get("/fetch-data", async (req, res) => {
+    const data = {};
+    const transactions = await functions.getTransactions(JSON.parse(sess.user)._id);
+    const accounts = await functions.getAccounts(JSON.parse(sess.user)._id);
+    const investments = await functions.getTotalInvestment(transactions, accounts);
+
+    const downlines = await functions.getDownlines(JSON.parse(sess.user).referral_code);
+    const upline_details = await functions.getUplineDetails(JSON.parse(sess.user).upline);
+    const ref_profits = functions.getRefProfits(transactions);
+    const notifications = await functions.getNotifications(JSON.parse(sess.user)._id);
+
+    const is_admin = sess.user && JSON.parse(sess.user).role.includes("admin")
+
+    if (is_admin) {
+        sess.page = "admin"
+        const approved_transactions = await functions.getAllTransactions("approved");
+        const pending_transactions = await (await functions.getAllTransactions("pending")).filter(i => i.type !== "referral_bonus");
+        const other_transactions = await (await functions.getAllTransactions("others")).filter(i => i.type !== "referral_bonus")
+        const total_deposit = await functions.calcTotalTransByType(approved_transactions, "deposit");
+        const total_withdrawn = await functions.calcTotalTransByType(approved_transactions, "withdrawal");
+        const total_invested = await functions.calcTotalTransByType(approved_transactions, "investment");
+        data["admin"] = {
+            total_deposit, total_withdrawn, total_invested, pending_transactions, other_transactions
+        }
+    }
+
+    data["available_balance"] = accounts && accounts.length ? accounts[0].balance : 0
+    data["total_invested"] = investments.total;
+    data["total_profits"] = investments.investment_profit + investments.referral_bonus;
+    data["account_balance"] = (accounts && accounts.length ? accounts[0].balance : 0) //+ investments.total;
+    data["this_month"] = {
+        profits: investments.this_month.profit,
+        referrals: investments.this_month.referral_bonus,
+        total: investments.this_month.profit,
+        investment_profit: investments.this_month.investment_profit
+    }
+    data["investments"] = {
+        total: investments.total,
+        count: investments.investments.length,
+        items: investments.investments,
+
+    }
+    data["accounts"] = accounts[0];
+    data["user"] = {
+        has_account: user_has_account,
+        ...JSON.parse(sess.user),
+        upline: upline_details,
+        notifications,
+        downlines,
+        ref_profits,
+        password,
+        ref_link: user_board_url + "/register?code=" + JSON.parse(sess.user).referral_code,
+    }
+    data["currency"] = accounts && accounts.length ? accounts[0].currency : "BTC"
+
+    data["website"] = website_url//process.env["WEBSITE_URL"]
+    req.session["data"] = data;
+    res.send({
+        data
+    })
+})*/
+
 app.post("/auth", async (req, res) => {
     console.log("req.session.page", req.session.page);
 
@@ -360,76 +492,19 @@ app.post("/auth", async (req, res) => {
         },
     }).then(async resp => {
         const sess = req.session;
-        const data = {};
-
+        
         const { email, password } = req.body
         sess.email = email
         sess.password = password
         sess.token = resp.data.token;
+        resp["data"]["user"].password = password
         sess.user = JSON.stringify(resp.data.user)
-        
+
         response.success = true
         response.data = resp.data
-        const is_admin = sess.user && JSON.parse(sess.user).role.includes("admin")
-
-        const transactions = await functions.getTransactions(JSON.parse(sess.user)._id);
-        const accounts = await functions.getAccounts(JSON.parse(sess.user)._id);
-        const investments = await functions.getTotalInvestment(transactions, accounts);
-
-        const downlines = await functions.getDownlines(JSON.parse(sess.user).referral_code);
-        const upline_details = await functions.getUplineDetails(JSON.parse(sess.user).upline);
-        const ref_profits = functions.getRefProfits(transactions);
-        const notifications = await functions.getNotifications(JSON.parse(sess.user)._id);
-        const user_has_account = accounts && accounts.length ? true : false;
-
-        console.log({ user_has_account, is_admin });
-
-        if (is_admin) {
-            sess.page = "admin"
-            const approved_transactions = await functions.getAllTransactions("approved");
-            const pending_transactions = await (await functions.getAllTransactions("pending")).filter(i => i.type !== "referral_bonus");
-            const other_transactions = await (await functions.getAllTransactions("others")).filter(i => i.type !== "referral_bonus")
-            const total_deposit = await functions.calcTotalTransByType(approved_transactions, "deposit");
-            const total_withdrawn = await functions.calcTotalTransByType(approved_transactions, "withdrawal");
-            const total_invested = await functions.calcTotalTransByType(approved_transactions, "investment");
-            data["admin"] = {
-                total_deposit, total_withdrawn, total_invested, pending_transactions, other_transactions
-            }
-        }
-
-        data["available_balance"] = accounts && accounts.length ? accounts[0].balance : 0
-        data["total_invested"] = investments.total;
-        data["total_profits"] = investments.investment_profit + investments.referral_bonus;
-        data["account_balance"] = (accounts && accounts.length ? accounts[0].balance : 0) //+ investments.total;
-        data["this_month"] = {
-            profits: investments.this_month.profit,
-            referrals: investments.this_month.referral_bonus,
-            total: investments.this_month.profit,
-            investment_profit: investments.this_month.investment_profit
-        }
-        data["investments"] = {
-            total: investments.total,
-            count: investments.investments.length,
-            items: investments.investments,
-
-        }
-        data["accounts"] = accounts[0];
-        data["user"] = {
-            has_account: user_has_account,
-            ...JSON.parse(sess.user),
-            upline: upline_details,
-            notifications,
-            downlines,
-            ref_profits,
-            password,
-            ref_link: user_board_url + "/register?code=" + JSON.parse(sess.user).referral_code,
-        }
-        data["currency"] = accounts && accounts.length ? accounts[0].currency : "BTC"
-
-        data["website"] = website_url//process.env["WEBSITE_URL"]
-        console.log("data.user.has_account", data.user.has_account);
+        const data = await fetchData(JSON.parse(sess.user))
+        //console.log("data", JSON.stringify(data));
         req.session["data"] = data;
-
 
     }).catch(err => {
         //console.log(err) 
@@ -599,22 +674,19 @@ app.get("/deposit", async (req, res) => {
 });
 
 app.post("/deposit", async (req, res) => {
-    console.log("hit post deposit route");
+    //console.log("hit post deposit route");
     const {
         deposit_amount,
         deposit_currency,
     } = req.body;
 
-    console.log({ deposit_amount, deposit_currency });
+    //console.log({ deposit_amount, deposit_currency });
     const response = { success: false }
 
     if (req.session.data && req.session.data.user) {
-        const user = //JSON.parse(
-            req.session.data.user
-        //);
+        const user = req.session.data.user
         const { firstname, lastname, email, upline } = user;
         const has_account = req.session.data.accounts && req.session.data.accounts._id;
-        console.log("has_account", has_account);
 
         let post_data = {
             type: "deposit",
@@ -671,17 +743,8 @@ app.post("/deposit", async (req, res) => {
             modifier: { id: upline_details._id, firstname: upline_details.firstname, lastname: upline_details.lastname, email: upline_details.email },
         };
 
-        /*console.log(JSON.stringify({
-            has_account,
-            update_acc_body,
-            post_acc_body,
-            upline_account,
-            update_acc_body,
-            post_upline_acc_body,
-            post_data,
-            post_upline_data
-        })); */
         axios.all([
+            //update account by socket
             axios({
                 method: has_account ? "PUT" : "POST",
                 url: has_account
@@ -698,6 +761,8 @@ app.post("/deposit", async (req, res) => {
                 data: upline_account.length ? update_upline_acc_body : post_upline_acc_body,
                 headers
             }),
+
+            // notify admin of deposit transaction by mail
             axios.post(
                 `${server_base_url}/api/transactions`,
                 post_data,
@@ -707,6 +772,7 @@ app.post("/deposit", async (req, res) => {
             ).then(async resp => {
                 response.success = true;
                 response.data = resp.data
+                // update notifications in menu by socket
                 await axios.post(
                     `${server_base_url}/api/notifications`,
                     {
@@ -751,7 +817,7 @@ app.post("/deposit", async (req, res) => {
 app.put("/update-transaction", async (req, res) => {
     console.log("req.body.id", req.body.id);
     const response = { success: false }
-    if (req.session.user){
+    if (req.session.user) {
         let headers = {
             "Content-type": "application/json",
             "x-auth-token": req.session.token
@@ -770,14 +836,14 @@ app.put("/update-transaction", async (req, res) => {
         }
 
         console.log(data);
-         await axios.put(server_base_url
-        + "/api/transactions/" + req.body.id, 
-        data, { headers }).then(resp => {
-            response.success = true;
-            response.data = resp.data;
-            response.data._id = response.data.type = response.data.date_created = response.data.date_modified = undefined;
-        })
-        .catch(err => console.log("Update transaction err", err))
+        await axios.put(server_base_url
+            + "/api/transactions/" + req.body.id,
+            data, { headers }).then(resp => {
+                response.success = true;
+                response.data = resp.data;
+                response.data._id = response.data.type = response.data.date_created = response.data.date_modified = undefined;
+            })
+            .catch(err => console.log("Update transaction err", err))
     }
     res.send(response)
 })
@@ -1074,6 +1140,13 @@ app.post("/cancel-investment", async (req, res) => {
     }
 })
 
-app.listen(port, function () {
+const server = app.listen(port, function () {
     console.log("userdashboard server listening at ", port);
 });
+
+const io = socketio(server)
+
+io.on('connection', (socket) => {
+    console.log(`New connection: ${socket.id}`);
+    socket.emit('notification', 'Thanks for connecting to Codedamn!')
+})

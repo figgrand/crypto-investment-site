@@ -22,7 +22,7 @@ const confirmInvestment = async () => {
     body: JSON.stringify({
       type: "investment",
       created_by: { id: user_id },
-      status: "pending",
+      status: "active",
       plan_id,
       amount: parseInt(amount),
       currency,
