@@ -83,29 +83,30 @@
                     <div class="textwidget">
                         <div class="sc_form_wrap">
                             <div class="sc_form sc_form_style_form_1" id="sc_form_1">
-                                <form action="#" class="sc_input_hover_default" data-formtype="form_1" method="post">
+                                <!-- <form action="/#" class="sc_input_hover_default" data-formtype="form_1" method="post"> -->
+                                    <p id="contact-response" class="success">Your message has been sent successfully. Check your email for a response.</p>
                                     <div class="sc_form_info">
                                         <div class="sc_form_item sc_form_field">
-                                            <input aria-required="true" class="sc_form_username" name="username"
-                                                placeholder="Name *" type="text">
+                                            <input aria-required="true" class="sc_form_name" name="name"
+                                                placeholder="Name *" type="text" id="name" >
                                         </div>
                                         <div class="sc_form_item sc_form_field">
                                             <input aria-required="true" class="sc_form_email" name="email"
-                                                placeholder="E-mail *" type="text">
+                                                placeholder="E-mail *" type="text" id="email" >
                                         </div>
 
                                     </div>
                                     <div class="sc_form_item sc_form_message">
                                         <textarea aria-required="true" class="sc_form_message" name="message"
-                                            placeholder="Message"></textarea>
+                                            placeholder="Message" id="message" ></textarea>
                                     </div>
                                     <div class="sc_form_item sc_form_button">
-                                        <button name="contact" disabled
+                                        <button name="contact" id="btnContact"
                                             class="sc_button sc_button_style_filled sc_button_size_medium sc_button_iconed icon-mail-light">Send
                                             Message</button>
                                     </div>
                                     <div class="result sc_infobox"></div>
-                                </form>
+                                <!-- </form> -->
                             </div>
                         </div>
                     </div>
@@ -119,7 +120,7 @@
 <div class="copyright_wrap copyright_style_soc scheme_dark">
     <div class="copyright_wrap_inner">
         <div class="content_wrap">
-            Copyright 2021 - Figgrand Trade </div>
+            Copyright 2023 - Figgrand Trade </div>
     </div>
 </div>
 </div>
@@ -142,6 +143,7 @@
         var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
     })();
 </script>
+<script src="js/contact.js" ></script>
 <!-- /GetButton.io widget -->
 
 <!-- <script
