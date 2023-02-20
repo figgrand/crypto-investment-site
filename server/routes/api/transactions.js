@@ -39,7 +39,9 @@ router.post("/", auth, (req, res) => {
     btc_wallet
   });
 
-  newTransaction.save().then((transaction) => res.json(transaction));
+  newTransaction.save().then((transaction) => {
+    res.json(transaction)
+  });
 });
 
 router.put("/:id", async (req, res) => {

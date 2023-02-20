@@ -33,6 +33,7 @@ var upline = document.getElementById("upline")?.value;
         return res.json();
       }).then(d => {
         console.log({d})
+        window.history.back()
       })
       .catch(err => console.log(err));
 }

@@ -34,6 +34,7 @@ const confirmInvestment = async () => {
     return res.json();
   }).then(d => {
     console.log({ d })
+    window.location.href = "/plans"
   })
     .catch(err => console.log(err));
 }

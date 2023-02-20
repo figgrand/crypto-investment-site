@@ -54,7 +54,7 @@ const getAccounts = async (user_id) => {
         if (res.data.length) {
             logMessage(res.data);
             accounts = user_id ? res.data.filter(d => d.created_by.id === user_id && d.status === "active"
-            ) : res.data
+            ) : res.data.filter(d => d.status === "active")
         }
     }).catch((err) => console.log("Get accounts error", err))
     //console.log("accounts.length", accounts.length);
@@ -376,8 +376,12 @@ const updateSessionData = (prev, item) => {
     return updated_data
 }
 
-const fetchData = () => {
-
+const getUsers = async () => {
+    let users = []
+    await axios.get(process.env["SERVER_BASE_URL"] + "/api/users").then(res => {
+        users = res.data
+    }).catch(() => console.log("Get users error", err))
+    return users
 }
 
 module.exports = {
@@ -401,5 +405,5 @@ module.exports = {
     getAllTransactions,
     calcTotalTransByType,
     updateSessionData,
-    fetchData
+    getUsers
 }

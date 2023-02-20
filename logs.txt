@@ -1,0 +1,64 @@
+
+> dev
+> (cd server && npm run dev) & (cd website-ejs && npm run dev) & (cd userdashboard && npm run dev)
+
+
+> userdashboard@1.0.0 dev
+> nodemon app.js
+
+
+> server@1.0.0 dev
+> nodemon server.js
+
+
+> website-ejs@1.0.0 dev
+> nodemon app.js
+
+[33m[nodemon] 2.0.20[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `node app.js`[39m
+[33m[nodemon] 2.0.20[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `node app.js`[39m
+[33m[nodemon] 2.0.20[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `node server.js`[39m
+http://vkaz:3000
+website server listening at  3000
+userdashboard server listening at  3001
+Backend server started on port 3002
+Connected to redis successfully
+New connection: JFzFWrwKDkRdcRHxAAAB
+fetching data...
+MongoDB Connected
+investment_profit 0
+done fetching data.
+{
+  base_url: 'http://vkaz:3002',
+  email: 'admin@figgrandtrade.com',
+  password: 'Admin'
+}
+New connection: c0gS4NXKgP28LMQXAAAD
+in cancel inv
+{ id: '63f3a740fc03c19ba618f8f9' }
+prev_inv.length b4 4
+prev_inv.length after 3
+fetching data...
+investment_profit 0
+done fetching data.
+New connection: i-JuN-a75LeSQ43uAAAF
+fetching data...
+investment_profit 0
+done fetching data.
+New connection: SMnrnVs26iPMv6WhAAAH
+{ user_board_url: 'http://vkaz:3001' }
+{ user_board_url: 'http://vkaz:3001' }
+running depositROIs every minute
+No investment to credit for 63edf24c0de07bb146182496
+No investment to credit for 63edf24c0de07bb146182498

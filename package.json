@@ -5,6 +5,7 @@
     },
     "dependencies": {
         "dotenv": "^16.0.3",
+        "nodemailer": "^6.9.1",
         "referral-codes": "^2.0.3"
     }
 }

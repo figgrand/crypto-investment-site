@@ -17,6 +17,7 @@ const updateTransactionStatus = async (id, action) => {
         return res.json();
     }).then(d => {
         console.log({ d })
+        window.location.reload();
     }).catch(err => console.log(err));
 }
 

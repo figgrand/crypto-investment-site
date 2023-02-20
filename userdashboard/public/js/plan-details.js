@@ -1,7 +1,7 @@
 
 var cancelBtn = document.getElementById("btnCancel")
 
-
+console.log("who deyyyy");
 const cancelInvestment = async() => {
   console.log("holla 2");
   let planId = document.getElementById("planID").value;
@@ -21,6 +21,8 @@ const cancelInvestment = async() => {
     return res.json();
   }).then(d => {
     console.log({d})
+    console.log("cancelled");
+    window.location.href = "/plans"
   })
   .catch(err => console.log(err));
 

@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 var axios = require("axios");
 var app = express();
 const socketio = require('socket.io');
+const sendMail = require("../sendEmail")
 
 const emitters = [
     "deposit-funds",
@@ -134,48 +135,9 @@ app.get("/", async (req, res) => {
     const sess = req.session;
     //const data = {};
 
-    if (sess.email && sess.password && sess.data) {
-        /*const transactions = await functions.getTransactions(JSON.parse(sess.user)._id);
-        const accounts = await functions.getAccounts(JSON.parse(sess.user)._id);
-        const investments = await functions.getTotalInvestment(transactions, accounts);
-
-        const downlines = await functions.getDownlines(JSON.parse(sess.user).referral_code);
-        const upline_details = await functions.getUplineDetails(JSON.parse(sess.user).upline);
-        const ref_profits = functions.getRefProfits(transactions);
-        const notifications = await functions.getNotifications(JSON.parse(sess.user)._id);
-
-        data["available_balance"] = accounts && accounts.length ? accounts[0].balance : 0
-        data["total_invested"] = investments.total;
-        data["total_profits"] = investments.investment_profit + investments.referral_bonus;
-        data["account_balance"] = (accounts && accounts.length ? accounts[0].balance : 0) //+ investments.total;
-        data["this_month"] = {
-            profits: investments.this_month.profit,
-            referrals: investments.this_month.referral_bonus,
-            total: investments.this_month.profit,
-            investment_profit: investments.this_month.investment_profit
-        }
-        data["investments"] = {
-            total: investments.total,
-            count: investments.investments.length,
-            items: investments.investments,
-
-        }
-        data["accounts"] = accounts[0];
-        data["user"] = {
-            ...JSON.parse(sess.user),
-            upline: upline_details,
-            notifications,
-            downlines,
-            ref_profits,
-            ref_link: process.env["USER_BOARD_URL"] + "/register?code=" + JSON.parse(sess.user).referral_code,
-        }
-        data["currency"] = accounts && accounts.length ? accounts[0].currency : "BTC"
-
-        data["website"] = process.env["WEBSITE_URL"]
-   
-        req.session["data"] = data*/
-        //console.log("data.accounts.investments:",JSON.stringify(data.accounts.investments));
-
+    if (sess.email && sess.password /*&& sess.data*/) {
+         const data = await fetchData(JSON.parse(sess.user))
+        req.session["data"] = data;
         res.render(path + "/index", {
             page_name: "index",
             data: sess.data
@@ -194,7 +156,9 @@ app.get("/", async (req, res) => {
 app.get("/plans", async (req, res) => {
     const sess = req.session;
     if (sess.email && sess.password) {
-        const data = sess.data;
+         const data = await fetchData(JSON.parse(sess.user))
+        req.session["data"] = data;
+        //const data = sess.data;
         res.render(path + "/plans", {
             page_name: "plans",
             data
@@ -213,7 +177,9 @@ app.get("/plans", async (req, res) => {
 app.get("/plan-details", async (req, res) => {
     const sess = req.session;
     if (sess.email && sess.password) {
-        const data = sess.data;
+         const data = await fetchData(JSON.parse(sess.user))
+        req.session["data"] = data;
+        //const data = sess.data;
         let investment_id = req.query.id;
         let plan;
 
@@ -250,8 +216,10 @@ app.get("/invest", async (req, res) => {
     const sess = req.session;
 
     if (sess.email && sess.password) {
+        const data = await fetchData(JSON.parse(sess.user))
+        req.session["data"] = data;
         const notifications = sess.notifications//await functions.getNotifications(JSON.parse(sess.user).id);
-        const data = sess.data;
+        //const data = sess.data;
         res.render(path + "/invest", {
             page_name: "invest",
             /*user: JSON.parse(sess.user),
@@ -326,13 +294,13 @@ app.post("/submit-registration", async (req, res) => {
     }).then(async resp => {
         response.success = true
         console.log("success");
-        // await sendMail({
-        //     firstname, lastname, email, mail_type: mail_types[0]
-        // });
+        await sendMail({
+            firstname, lastname, email, mail_type: mail_types[0]
+        });
 
-        // await sendMail({
-        //     firstname, lastname, email, mail_type: mail_types[1]
-        // })
+        await sendMail({
+            firstname, lastname, email, mail_type: mail_types[1]
+        })
         console.log(resp)
     }).catch(err => {
         //console.log(err) 
@@ -353,9 +321,12 @@ app.post("/submit-registration", async (req, res) => {
 })
 
 const fetchData = async (user) => {
+    console.log("fetching data...");
     const data = {};
     const transactions = await functions.getTransactions(user._id);
     const accounts = await functions.getAccounts(user._id);
+
+
     const investments = await functions.getTotalInvestment(transactions, accounts);
 
     const downlines = await functions.getDownlines(user.referral_code);
@@ -366,7 +337,7 @@ const fetchData = async (user) => {
     const is_admin = user && user.role.includes("admin")
     const user_has_account = accounts && accounts.length ? true : false;
     if (is_admin) {
-        sess.page = "admin"
+        //sess.page = "admin"
         const approved_transactions = await functions.getAllTransactions("approved");
         const active_investments = await functions.getAllTransactions("active")
         const pending_transactions = await (await functions.getAllTransactions("pending")).filter(i => i.type !== "referral_bonus");
@@ -374,8 +345,17 @@ const fetchData = async (user) => {
         const total_deposit = await functions.calcTotalTransByType(approved_transactions, "deposit");
         const total_withdrawn = await functions.calcTotalTransByType(approved_transactions, "withdrawal");
         const total_invested = await functions.calcTotalTransByType(active_investments, "investment");
+        const all_accounts = await functions.getAccounts();
+        const users = await functions.getUsers();
+
         data["admin"] = {
-            total_deposit, total_withdrawn, total_invested, pending_transactions, other_transactions
+            total_deposit,
+            total_withdrawn,
+            total_invested,
+            pending_transactions,
+            other_transactions,
+            all_accounts,
+            users
         }
     }
 
@@ -409,71 +389,9 @@ const fetchData = async (user) => {
     data["currency"] = accounts && accounts.length ? accounts[0].currency : "BTC"
 
     data["website"] = website_url;
-
+    console.log("done fetching data.");
     return data
 }
-
-/*app.get("/fetch-data", async (req, res) => {
-    const data = {};
-    const transactions = await functions.getTransactions(JSON.parse(sess.user)._id);
-    const accounts = await functions.getAccounts(JSON.parse(sess.user)._id);
-    const investments = await functions.getTotalInvestment(transactions, accounts);
-
-    const downlines = await functions.getDownlines(JSON.parse(sess.user).referral_code);
-    const upline_details = await functions.getUplineDetails(JSON.parse(sess.user).upline);
-    const ref_profits = functions.getRefProfits(transactions);
-    const notifications = await functions.getNotifications(JSON.parse(sess.user)._id);
-
-    const is_admin = sess.user && JSON.parse(sess.user).role.includes("admin")
-
-    if (is_admin) {
-        sess.page = "admin"
-        const approved_transactions = await functions.getAllTransactions("approved");
-        const pending_transactions = await (await functions.getAllTransactions("pending")).filter(i => i.type !== "referral_bonus");
-        const other_transactions = await (await functions.getAllTransactions("others")).filter(i => i.type !== "referral_bonus")
-        const total_deposit = await functions.calcTotalTransByType(approved_transactions, "deposit");
-        const total_withdrawn = await functions.calcTotalTransByType(approved_transactions, "withdrawal");
-        const total_invested = await functions.calcTotalTransByType(approved_transactions, "investment");
-        data["admin"] = {
-            total_deposit, total_withdrawn, total_invested, pending_transactions, other_transactions
-        }
-    }
-
-    data["available_balance"] = accounts && accounts.length ? accounts[0].balance : 0
-    data["total_invested"] = investments.total;
-    data["total_profits"] = investments.investment_profit + investments.referral_bonus;
-    data["account_balance"] = (accounts && accounts.length ? accounts[0].balance : 0) //+ investments.total;
-    data["this_month"] = {
-        profits: investments.this_month.profit,
-        referrals: investments.this_month.referral_bonus,
-        total: investments.this_month.profit,
-        investment_profit: investments.this_month.investment_profit
-    }
-    data["investments"] = {
-        total: investments.total,
-        count: investments.investments.length,
-        items: investments.investments,
-
-    }
-    data["accounts"] = accounts[0];
-    data["user"] = {
-        has_account: user_has_account,
-        ...JSON.parse(sess.user),
-        upline: upline_details,
-        notifications,
-        downlines,
-        ref_profits,
-        password,
-        ref_link: user_board_url + "/register?code=" + JSON.parse(sess.user).referral_code,
-    }
-    data["currency"] = accounts && accounts.length ? accounts[0].currency : "BTC"
-
-    data["website"] = website_url//process.env["WEBSITE_URL"]
-    req.session["data"] = data;
-    res.send({
-        data
-    })
-})*/
 
 app.post("/auth", async (req, res) => {
     console.log("req.session.page", req.session.page);
@@ -492,7 +410,7 @@ app.post("/auth", async (req, res) => {
         },
     }).then(async resp => {
         const sess = req.session;
-        
+
         const { email, password } = req.body
         sess.email = email
         sess.password = password
@@ -502,16 +420,21 @@ app.post("/auth", async (req, res) => {
 
         response.success = true
         response.data = resp.data
-        const data = await fetchData(JSON.parse(sess.user))
+        const is_admin = JSON.parse(sess.user) && JSON.parse(sess.user).role.includes("admin")
+
+        if (is_admin) {
+            sess.page = "admin"
+        }
         //console.log("data", JSON.stringify(data));
-        req.session["data"] = data;
+       // const data = await fetchData(JSON.parse(sess.user))
+       // req.session["data"] = data;
 
     }).catch(err => {
         //console.log(err) 
         console.log("error", err);
         response.error = err.response && err.response.data ? err.response.data.msg : "We couln't authenticate you. Please try again."
     })
-
+    console.log("response.success", response.success);
     if (response.success) {
         res.send({ token: response.data.token, redirect: `${user_board_url}${req.session.page && req.session.page !== "overview" ? "/" + req.session.page : ""}`, user: JSON.stringify(response.data.user) })
     } else {
@@ -523,10 +446,12 @@ app.get("/admin", async (req, res) => {
     const sess = req.session;
     //console.log("user role", sess.user.role, "parsed role", JSON.parse(sess.user).role);
     if (sess.email && sess.password && (sess.user && JSON.parse(sess.user).role.includes("admin"))) {
-        const data = sess.data;
+        const data = await fetchData(JSON.parse(sess.user))
+        req.session["data"] = data;
+        //const data = sess.data;
         const { total_deposit, total_withdrawn, total_invested, pending_transactions, other_transactions } = data.admin
-        console.log("show data.admin");
-        console.log(data.admin);
+        //console.log("show data.admin");
+        //console.log(data.admin);
         res.render(path + "/admin", {
             data,
             page_name: "admin",
@@ -580,13 +505,9 @@ app.post("/invest", async (req, res) => {
                 response.data["last_updated"] = null;
                 response.data["profit"] = { total: 0, rois: [] } //here
             }
-            // response.data._id = 
             response.data.type = response.data.date_created = response.data.date_modified = undefined;
 
-            //  console.log("req.session.data.accounts", req.session.data.accounts);
-            // console.log("post_data.amount", post_data.amount);
             let prev_inv = req.session.data.accounts && req.session.data.accounts.investments.length ? req.session.data.accounts.investments : []
-            //console.log("prev_inv", prev_inv);
             await axios.put(server_base_url
                 + "/api/accounts/" + req.session.data.accounts._id, {
                 id: req.session.data.accounts._id,
@@ -597,12 +518,7 @@ app.post("/invest", async (req, res) => {
             await axios.post(
                 `${server_base_url}/api/notifications`,
                 {
-                    user: user._id/*{
-                        id: user._id, 
-                        firstname: user.firstname, 
-                        lastname: user.lastname, 
-                        email: user.email 
-                    }*/,
+                    user: user._id,
                     title: "New Investment plan created",
                     description: "Your investment plan has been created."
                 },
@@ -620,10 +536,12 @@ app.get("/invest-form", async (req, res) => {
     const sess = req.session;
 
     if (sess.email && sess.password) {
+        const data = await fetchData(JSON.parse(sess.user))
+        req.session["data"] = data;
         //console.log("sess.accounts", sess.accounts);
         const notifications = sess.notifications//await functions.getNotifications(JSON.parse(sess.user).id);
         const selected_plan = req.query["plan-iv"];
-        const data = sess.data;
+        //const data = sess.data;
         //console.log({selected_plan});
         res.render(path + "/invest-form", {
             page_name: "invest-form",
@@ -651,8 +569,10 @@ app.get("/deposit", async (req, res) => {
     const sess = req.session;
 
     if (sess.email && sess.password) {
+         const data = await fetchData(JSON.parse(sess.user))
+        req.session["data"] = data;
         const notifications = sess.notifications// await functions.getNotifications(JSON.parse(sess.user).id);
-        const data = sess.data;
+        //const data = sess.data;
         res.render(path + "/deposit", {
             page_name: "deposit",
             data
@@ -674,23 +594,20 @@ app.get("/deposit", async (req, res) => {
 });
 
 app.post("/deposit", async (req, res) => {
-    //console.log("hit post deposit route");
     const {
         deposit_amount,
         deposit_currency,
     } = req.body;
 
-    //console.log({ deposit_amount, deposit_currency });
     const response = { success: false }
 
     if (req.session.data && req.session.data.user) {
         const user = req.session.data.user
         const { firstname, lastname, email, upline } = user;
-        const has_account = req.session.data.accounts && req.session.data.accounts._id;
 
         let post_data = {
             type: "deposit",
-            created_by: { id: user._id, firstname, lastname, email },
+            created_by: { id: user._id, firstname, lastname, email, upline },
             upline,
             amount: deposit_amount,
             currency: deposit_currency
@@ -701,123 +618,46 @@ app.post("/deposit", async (req, res) => {
             "x-auth-token": req.session.token
         };
 
-        let upline_details = req.session.data.user["upline"];
-
-        let upline_account = upline_details["accounts"]
-
-        let xyz = deposit_amount * referral_bonus;
-
-        let post_upline_data = {
-            type: "referral_bonus",
-            created_by: { id: upline_details._id, firstname: upline_details.firstname, lastname: upline_details.lastname, email: upline_details.email },
-            upline: upline_details.upline,
-            amount: xyz,
-            currency: deposit_currency
-        };
-
-        let update_acc_body = {
-            id: req.session.data.accounts && req.session.data.accounts._id || undefined,
-            balance: req.session.data.accounts && parseInt(req.session.data.accounts.balance) + parseInt(deposit_amount || 0),
-            created_by: { id: user._id, firstname, lastname, email },
-            modifier: { id: user._id, firstname, lastname, email },
-        };
-
-        let update_upline_acc_body = {
-            id: upline_account[0] && upline_account[0]._id || undefined,
-            balance: upline_account[0] && parseInt(upline_account[0].balance) + (parseInt(deposit_amount) * referral_bonus),
-            created_by: { id: upline_details._id, firstname: upline_details.firstname, lastname: upline_details.lastname, email: upline_details.email },
-            modifier: { id: upline_details._id, firstname: upline_details.firstname, lastname: upline_details.lastname, email: upline_details.email },
-        };
-
-        let post_acc_body = {
-            created_by: { id: user._id, firstname, lastname, email },
-            currency: deposit_currency,
-            balance: deposit_amount,
-            modifier: { id: user._id, firstname, lastname, email },
-        };
-
-        let post_upline_acc_body = {
-            created_by: { id: upline_details._id, firstname: upline_details.firstname, lastname: upline_details.lastname, email: upline_details.email },
-            currency: deposit_currency,
-            balance: deposit_amount * referral_bonus,
-            modifier: { id: upline_details._id, firstname: upline_details.firstname, lastname: upline_details.lastname, email: upline_details.email },
-        };
-
-        axios.all([
-            //update account by socket
-            axios({
-                method: has_account ? "PUT" : "POST",
-                url: has_account
-                    ? `${server_base_url}/api/accounts/${req.session.data.accounts._id}`
-                    : `${server_base_url}/api/accounts`,
-                data: has_account ? update_acc_body : post_acc_body,
+        // notify admin of deposit transaction by mail
+        axios.post(
+            `${server_base_url}/api/transactions`,
+            post_data,
+            {
                 headers
-            }),
-            axios({
-                method: upline_account.length ? "PUT" : "POST",
-                url: upline_account.length
-                    ? `${server_base_url}/api/accounts/${upline_account[0]._id}`
-                    : `${server_base_url}/api/accounts`,
-                data: upline_account.length ? update_upline_acc_body : post_upline_acc_body,
-                headers
-            }),
-
-            // notify admin of deposit transaction by mail
-            axios.post(
-                `${server_base_url}/api/transactions`,
-                post_data,
+            }
+        ).then(async resp => {
+            response.success = true;
+            response.data = resp.data
+            // update notifications in menu by socket
+            await sendMail({
+                firstname,
+                lastname,
+                email: "figgrand01@gmail.com",
+                mail_type: "new_deposit",
+                amount: deposit_amount
+            })
+            await axios.post(
+                `${server_base_url}/api/notifications`,
+                {
+                    user: user._id,
+                    title: "Your Deposit Order is placed",
+                    description: "Your deposit has been sent for approval. You will be notified when this has been done."
+                },
                 {
                     headers
                 }
-            ).then(async resp => {
-                response.success = true;
-                response.data = resp.data
-                // update notifications in menu by socket
-                await axios.post(
-                    `${server_base_url}/api/notifications`,
-                    {
-                        user: user._id,
-                        title: "Your Deposit Order is placed",
-                        description: "Your deposit has been sent for approval. You will be notified when this has been done."
-                    },
-                    {
-                        headers
-                    }
-                )//.then(respnse => ))
-                    .catch(err => console.log("Notifications err", err))
-            }).catch(err => console.log("Depost err", err)),
-
-            axios.post(
-                `${server_base_url}/api/transactions`,
-                post_upline_data,
-                {
-                    headers
-                }
-            ).then(async resp => {
-                response.success = true;
-                response.data = resp.data
-                await axios.post(
-                    `${server_base_url}/api/notifications`,
-                    {
-                        user: upline_details._id,
-                        title: `Referral bonus deposited.`,
-                        description: `Your downline: ${user.firstname} ${user.lastname} has deposited ${deposit_amount} and you have received ${deposit_amount * referral_bonus} referral bonus.`
-                    },
-                    {
-                        headers
-                    }
-                )//.then(respnse => ))
-                    .catch(err => console.log("Notifications err", err))
-            }).catch(err => console.log("Depost err", err))
-        ])
+            )//.then(respnse => ))
+                .catch(err => console.log("Notifications err", err))
+        }).catch(err => console.log("Depost err", err))
         res.send(response)
     }
 })
 
 app.put("/update-transaction", async (req, res) => {
-    console.log("req.body.id", req.body.id);
+    console.log("req.body", req.body);
     const response = { success: false }
     if (req.session.user) {
+        const sess = req.session
         let headers = {
             "Content-type": "application/json",
             "x-auth-token": req.session.token
@@ -835,13 +675,119 @@ app.put("/update-transaction", async (req, res) => {
             date_modified: new Date().toISOString()
         }
 
-        console.log(data);
         await axios.put(server_base_url
             + "/api/transactions/" + req.body.id,
-            data, { headers }).then(resp => {
+            data, { headers }).then(async resp => {
                 response.success = true;
                 response.data = resp.data;
                 response.data._id = response.data.type = response.data.date_created = response.data.date_modified = undefined;
+                 
+                console.log("resp.data.created_by.id", resp.data.created_by.id);
+                if (req.body.status === "approved") {
+                    const user_details = sess.data.admin.users.find(u => u._id === resp.data.created_by.id);
+                   
+                    const upline_details = await functions.getUplineDetails(user_details.upline);
+                    const upline_account = upline_details["accounts"];
+                    const user_account = sess.data.admin.all_accounts.find(a => a.created_by._id === resp.data.created_by._id)
+                    const account_id = user_account && user_account._id;
+
+                    let update_acc_body = {
+                        id: user_account && user_account._id || undefined,
+                        balance: user_account && parseInt(user_account.balance) + parseInt(resp.data.amount || 0),
+                        created_by: resp.data.created_by,
+                        modifier: data.modifier,
+                    };
+
+                    let post_acc_body = {
+                        created_by: resp.data.created_by,
+                        currency: resp.data.currency,
+                        balance: resp.data.amount,
+                        modifier: data.modifier,
+                    };
+
+                    let update_upline_acc_body = {
+                        id: upline_account[0] && upline_account[0]._id || undefined,
+                        balance: upline_account[0] && parseInt(upline_account[0].balance) + (parseInt(resp.data.amount) * referral_bonus),
+                        created_by: { id: upline_details._id, firstname: upline_details.firstname, lastname: upline_details.lastname, email: upline_details.email },
+                        modifier: data.modifier,
+                    };
+
+                    let post_upline_acc_body = {
+                        created_by: { id: upline_details._id, firstname: upline_details.firstname, lastname: upline_details.lastname, email: upline_details.email },
+                        currency: resp.data.currency,
+                        balance: resp.data.amount * referral_bonus,
+                        modifier: data.modifier,
+                    };
+
+                    let xyz = resp.data.amount * referral_bonus;
+
+                    let post_upline_data = {
+                        type: "referral_bonus",
+                        created_by: {
+                            id: upline_details._id,
+                            firstname: upline_details.firstname,
+                            lastname: upline_details.lastname,
+                            email: upline_details.email
+                        },
+                        upline: upline_details.upline,
+                        amount: xyz,
+                        currency: resp.data.currency
+                    };
+
+                  /*  console.log(
+                        "user_details", user_details,
+                        "upline_details", upline_details,
+                        "upline_account", upline_account,
+                        "user_account", user_account,
+                        "account_id", account_id,
+                        "update_acc_body", update_acc_body,
+                        "post_acc_body", post_acc_body,
+                        "update_upline_acc_body", update_upline_acc_body,
+                        "post_upline_acc_body", post_upline_acc_body,
+                        "xyz", xyz,
+                        "post_upline_data", post_upline_data
+                    );*/
+
+                    //update account by socket
+                   axios({
+                        method: account_id ? "PUT" : "POST",
+                        url: account_id
+                            ? `${server_base_url}/api/accounts/${account_id}`
+                            : `${server_base_url}/api/accounts`,
+                        data: account_id ? update_acc_body : post_acc_body,
+                        headers
+                    })
+                    axios({
+                        method: upline_account.length ? "PUT" : "POST",
+                        url: upline_account.length
+                            ? `${server_base_url}/api/accounts/${upline_account[0]._id}`
+                            : `${server_base_url}/api/accounts`,
+                        data: upline_account.length ? update_upline_acc_body : post_upline_acc_body,
+                        headers
+                    })
+                    axios.post(
+                        `${server_base_url}/api/transactions`,
+                        post_upline_data,
+                        {
+                            headers
+                        }
+                    ).then(async resp => {
+                        response.success = true;
+                        response.data = resp.data
+                        await axios.post(
+                            `${server_base_url}/api/notifications`,
+                            {
+                                user: upline_details._id,
+                                title: `Referral bonus deposited.`,
+                                description: `Your downline: ${user_details.firstname} ${user_details.lastname} has deposited ${resp.data.amount} and you have received ${resp.data.amount * referral_bonus} referral bonus.`
+                            },
+                            {
+                                headers
+                            }
+                        )
+                            .catch(err => console.log("Notifications err", err))
+                    }).catch(err => console.log("Depost err", err)) 
+                }
             })
             .catch(err => console.log("Update transaction err", err))
     }
@@ -852,8 +798,10 @@ app.get("/withdraw", async (req, res) => {
     const sess = req.session;
 
     if (sess.email && sess.password) {
-        const notifications = await functions.getNotifications(JSON.parse(sess.user).id);
-        const data = sess.data
+         const data = await fetchData(JSON.parse(sess.user))
+        req.session["data"] = data;
+       // const notifications = await functions.getNotifications(JSON.parse(sess.user).id);
+        //const data = sess.data
         res.render(path + "/withdraw", {
             page_name: "withdraw",
             data
@@ -927,8 +875,10 @@ app.get("/profile", async (req, res) => {
     const sess = req.session;
 
     if (sess.email && sess.password) {
-        const notifications = sess.notifications//await functions.getNotifications(JSON.parse(sess.user).id);
-        const data = sess.data
+         const data = await fetchData(JSON.parse(sess.user))
+        req.session["data"] = data;
+        //const notifications = sess.notifications//await functions.getNotifications(JSON.parse(sess.user).id);
+        //const data = sess.data
         res.render(path + "/profile", {
             page_name: "profile",
             data
@@ -951,8 +901,10 @@ app.get("/profile", async (req, res) => {
 app.get("/profile-setting", async (req, res) => {
     const sess = req.session;
     if (sess.email && sess.password) {
-        const notifications = sess.notifications//await functions.getNotifications(JSON.parse(sess.user).id);
-        const data = sess.data
+         const data = await fetchData(JSON.parse(sess.user))
+        req.session["data"] = data;
+        //const notifications = sess.notifications//await functions.getNotifications(JSON.parse(sess.user).id);
+        //const data = sess.data
         res.render(path + "/profile-setting", {
             page_name: "profile-setting",
             data
@@ -1040,8 +992,10 @@ app.get("/notifications", async (req, res) => {
     console.log("id", id);
     const sess = req.session;
     if (sess.email && sess.password) {
+         const data = await fetchData(JSON.parse(sess.user))
+        req.session["data"] = data;
         const notifications = sess.data.user.notifications.data
-        const data = sess.data
+        //const data = sess.data
 
         if (id) {
 
@@ -1112,6 +1066,7 @@ app.get("/notifications/:id", async (req, res) => {
 
 app.post("/cancel-investment", async (req, res) => {
     console.log("in cancel inv");
+    const response = { success: false }
     if (req.session.data.user) {
         const { id } = req.body
         console.log({ id });
@@ -1135,9 +1090,13 @@ app.post("/cancel-investment", async (req, res) => {
             id: req.session.data.accounts._id,
             balance: req.session.data.accounts.balance + inv.amount + inv.profit.total,
             investments: final
-        }, { headers })
+        }, { headers }).then(resp => {
+            response["success"] = true;
+            response["data"] = resp.data
+        })
             .catch(err => console.log("Update acc balance err", err))
     }
+    res.send(response)
 })
 
 const server = app.listen(port, function () {
