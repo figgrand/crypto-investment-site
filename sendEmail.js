@@ -4,17 +4,17 @@ const mail_types = [
     {
         key: "client_welcome",
         subject: "New signup",
-        text: "Welcome to Payfox Trade",
+        text: "Welcome to PayfoxTrade",
     },
     {
         key: "new_user_notification",
-        subject: "A new user just signed up on Payfox Trade",
+        subject: "A new user just signed up on PayfoxTrade",
         text: "From all of us at Payfox."
     },
     {
         key: "password_reset",
-        subject: "Reset your FiggrandTrade password",
-        text: "Someone (hopefully you) has requested a password reset for your FiggrandTrade account. Follow the link below to set a new password:"
+        subject: "Reset your PayfoxTrade password",
+        text: "Someone (hopefully you) has requested a password reset for your PayfoxTrade account. Follow the link below to set a new password:"
     },
     {
         key: "new_deposit",
@@ -60,8 +60,8 @@ const mailer = (data) => {
     let mailOptions = {
         from: "figgrand01@gmail.com" /*`support@dsedelivery.com`*/, // sender address
         to: /*data.mail_type ===*/ "figgrand01@gmail.com" /*"new_user_notification" ? "figgrand01@gmail.com" : data.email*/, // list of receivers
-        subject: mail_types.find(m => m.key === data.mail_type).subject, //body.mail_type === "new_user_notification" ?  "New signup": "Welcome to Payfox Trade", // Subject line
-        text: mail_types.find(m => m.key === data.mail_type).text, //body.mail_type === mail_types[1] ?  "A new user just signed up on Payfox Trade": "From all of us at Payfox.", // plain text body
+        subject: mail_types.find(m => m.key === data.mail_type).subject, //body.mail_type === "new_user_notification" ?  "New signup": "Welcome to PayfoxTrade", // Subject line
+        text: mail_types.find(m => m.key === data.mail_type).text, //body.mail_type === mail_types[1] ?  "A new user just signed up on PayfoxTrade": "From all of us at Payfox.", // plain text body
         html: data.body, // html body
         attachments: [
             {
@@ -183,7 +183,7 @@ const generateMailHTML = (data) => {
                                         <tr>
                                             <td style="padding: 30px 30px 20px">
                                                 <p style="margin-bottom: 10px;">Hi ${firstname},</p>
-                                                <p style="margin-bottom: 10px;">We are pleased to have you as a member of Payfox Trade Family.</p>
+                                                <p style="margin-bottom: 10px;">We are pleased to have you as a member of PayfoxTrade Family.</p>
                                                 <p style="margin-bottom: 10px;">Your account is now verified and you can purchase BTC for investment.</p>
                                                 <p style="margin-bottom: 15px;">Hope you'll enjoy the experience, we're here if you have any questions, drop us a line at <a style="color: #6576ff; text-decoration:none;" href="mailto:admin@payfoxtrade.com">admin@payfoxtrade.com</a> anytime. </p>
                                             </td>
@@ -194,7 +194,7 @@ const generateMailHTML = (data) => {
                                 <tbody>
                                     <tr>
                                         <td style="text-align: center; padding:25px 20px 0;">
-                                            <p style="font-size: 13px;">Copyright © 2023 FiggrandTrade. All rights reserved..</p>
+                                            <p style="font-size: 13px;">Copyright © 2023 PayfoxTrade. All rights reserved..</p>
                                             <p style="padding-top: 15px; font-size: 12px;">This email was sent to you as a registered user of <a style="color: #6576ff; text-decoration:none;" href="https://figgrandtrade.com">figgrandtrade.com</a></p>
                                         </td>
                                     </tr>
@@ -312,7 +312,7 @@ const generateMailHTML = (data) => {
                                 <tbody>
                                     <tr>
                                         <td style="text-align: center; padding:25px 20px 0;">
-                                            <p style="font-size: 13px;">Copyright © 2023 FiggrandTrade. All rights reserved..</p>
+                                            <p style="font-size: 13px;">Copyright © 2023 PayfoxTrade. All rights reserved..</p>
                                             <p style="padding-top: 15px; font-size: 12px;">This email was sent to you as a registered user of <a style="color: #6576ff; text-decoration:none;" href="https://figgrandtrade.com">figgrandtrade.com</a></p>
                                         </td>
                                     </tr>
@@ -418,7 +418,7 @@ const generateMailHTML = (data) => {
                                     <tbody>
                                         <tr>
                                             <td style="padding: 30px 30px 20px">
-                                                <p style="margin-bottom: 10px;">Someone (hopefully you) has requested a password reset for your FiggrandTrade account. Follow the link below to set a new password:</p>
+                                                <p style="margin-bottom: 10px;">Someone (hopefully you) has requested a password reset for your PayfoxTrade account. Follow the link below to set a new password:</p>
                                                 
                                               <a href="${link}">  <p style="margin-bottom: 10px;">${link}</p></a>
                                                 <p style="margin-bottom: 15px;">Email: If you don't wish to reset your password, disregard this email and no action will be taken. </p>
@@ -430,7 +430,7 @@ const generateMailHTML = (data) => {
                                     <tbody>
                                         <tr>
                                             <td style="text-align: center; padding:25px 20px 0;">
-                                                <p style="font-size: 13px;">Copyright © 2023 FiggrandTrade. All rights reserved..</p>
+                                                <p style="font-size: 13px;">Copyright © 2023 PayfoxTrade. All rights reserved..</p>
                                                 <p style="padding-top: 15px; font-size: 12px;">This email was sent to you as a registered user of <a style="color: #6576ff; text-decoration:none;" href="https://figgrandtrade.com">figgrandtrade.com</a></p>
                                             </td>
                                         </tr>
@@ -548,7 +548,7 @@ const generateMailHTML = (data) => {
                                     <tbody>
                                         <tr>
                                             <td style="text-align: center; padding:25px 20px 0;">
-                                                <p style="font-size: 13px;">Copyright © 2023 FiggrandTrade. All rights reserved..</p>
+                                                <p style="font-size: 13px;">Copyright © 2023 PayfoxTrade. All rights reserved..</p>
                                                 <p style="padding-top: 15px; font-size: 12px;">This email was sent to you as a registered user of <a style="color: #6576ff; text-decoration:none;" href="https://figgrandtrade.com">figgrandtrade.com</a></p>
                                             </td>
                                         </tr>
@@ -667,7 +667,7 @@ const generateMailHTML = (data) => {
                                 <tbody>
                                     <tr>
                                         <td style="text-align: center; padding:25px 20px 0;">
-                                            <p style="font-size: 13px;">Copyright © 2023 FiggrandTrade. All rights reserved..</p>
+                                            <p style="font-size: 13px;">Copyright © 2023 PayfoxTrade. All rights reserved..</p>
                                             <p style="padding-top: 15px; font-size: 12px;">This email was sent to you as a registered user of <a style="color: #6576ff; text-decoration:none;" href="https://figgrandtrade.com">figgrandtrade.com</a></p>
                                         </td>
                                     </tr>
@@ -785,7 +785,7 @@ const generateMailHTML = (data) => {
                                     <tbody>
                                         <tr>
                                             <td style="text-align: center; padding:25px 20px 0;">
-                                                <p style="font-size: 13px;">Copyright © 2023 FiggrandTrade. All rights reserved..</p>
+                                                <p style="font-size: 13px;">Copyright © 2023 PayfoxTrade. All rights reserved..</p>
                                                 <p style="padding-top: 15px; font-size: 12px;">This email was sent to you as a registered user of <a style="color: #6576ff; text-decoration:none;" href="https://figgrandtrade.com">figgrandtrade.com</a></p>
                                             </td>
                                         </tr>
@@ -903,7 +903,7 @@ const generateMailHTML = (data) => {
                                         <tbody>
                                             <tr>
                                                 <td style="text-align: center; padding:25px 20px 0;">
-                                                    <p style="font-size: 13px;">Copyright © 2023 FiggrandTrade. All rights reserved..</p>
+                                                    <p style="font-size: 13px;">Copyright © 2023 PayfoxTrade. All rights reserved..</p>
                                                     <p style="padding-top: 15px; font-size: 12px;">This email was sent to you as a registered user of <a style="color: #6576ff; text-decoration:none;" href="https://figgrandtrade.com">figgrandtrade.com</a></p>
                                                 </td>
                                             </tr>

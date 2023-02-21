@@ -143,6 +143,49 @@
                                 </div>
                             </div><!-- .card -->
                         </div><!-- .col -->
+                        <div class="col-md-12 col-lg-4">
+                            <div class="nk-wg-card card card-bordered h-100">
+                                <div class="card-inner h-100">
+                                    <div class="nk-iv-wg2">
+                                        <div class="nk-iv-wg2-title">
+                                            <h6 class="title">My Investment</h6>
+                                        </div>
+                                        <div class="nk-iv-wg2-text">
+                                            <div class="nk-iv-wg2-amount ui-v2">
+                                                <%= data.investments.total %><span class="sub">
+                                                        <%= data.investments.items.length %>
+                                                    </span>
+                                                    Active
+                                            </div>
+                                            <ul class="nk-iv-wg2-list">
+                                                <% for (let i=0; i < data.investments.items.length; i++) { %>
+                                                    <li>
+                                                        <span class="item-label"><a href="#">
+                                                                <%= data.investments.items[i].currency %>
+                                                            </a>
+                                                            <small>
+                                                                <%= data.investments.items[i].plan_id %> plan
+                                                            </small>
+                                                            <!-- <small>- 4.76% for <%= data.investments.items[i].duration %> Days</small> -->
+                                                        </span>
+                                                        <span class="item-value">
+                                                            <%= data.investments.items[i].balance %>
+                                                        </span>
+                                                    </li>
+                                                    <% } %>
+
+                                            </ul>
+                                        </div>
+                                        <div class="nk-iv-wg2-cta">
+                                            <a href="/plans" class="btn btn-light btn-lg btn-block">See all
+                                                Investment</a>
+                                            <div class="cta-extra">Check out <a href="#" class="link link-dark">Analytic
+                                                    Report</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- .card -->
+                        </div><!-- .col -->
                         <div class="col-md-6 col-lg-4">
                             <div class="nk-wg-card card card-bordered h-100">
                                 <div class="card-inner h-100">
@@ -192,49 +235,7 @@
                                 </div>
                             </div><!-- .card -->
                         </div><!-- .col -->
-                        <div class="col-md-12 col-lg-4">
-                            <div class="nk-wg-card card card-bordered h-100">
-                                <div class="card-inner h-100">
-                                    <div class="nk-iv-wg2">
-                                        <div class="nk-iv-wg2-title">
-                                            <h6 class="title">My Investment</h6>
-                                        </div>
-                                        <div class="nk-iv-wg2-text">
-                                            <div class="nk-iv-wg2-amount ui-v2">
-                                                <%= data.investments.total %><span class="sub">
-                                                        <%= data.investments.items.length %>
-                                                    </span>
-                                                    Active
-                                            </div>
-                                            <ul class="nk-iv-wg2-list">
-                                                <% for (let i=0; i < data.investments.items.length; i++) { %>
-                                                    <li>
-                                                        <span class="item-label"><a href="#">
-                                                                <%= data.investments.items[i].currency %>
-                                                            </a>
-                                                            <small>
-                                                                <%= data.investments.items[i].plan_id %> plan
-                                                            </small>
-                                                            <!-- <small>- 4.76% for <%= data.investments.items[i].duration %> Days</small> -->
-                                                        </span>
-                                                        <span class="item-value">
-                                                            <%= data.investments.items[i].balance %>
-                                                        </span>
-                                                    </li>
-                                                    <% } %>
-
-                                            </ul>
-                                        </div>
-                                        <div class="nk-iv-wg2-cta">
-                                            <a href="/plans" class="btn btn-light btn-lg btn-block">See all
-                                                Investment</a>
-                                            <div class="cta-extra">Check out <a href="#" class="link link-dark">Analytic
-                                                    Report</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div><!-- .card -->
-                        </div><!-- .col -->
+                       
                     </div><!-- .row -->
                 </div><!-- .nk-block -->
                 <div class="nk-block">

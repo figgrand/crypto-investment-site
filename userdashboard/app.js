@@ -360,7 +360,7 @@ const fetchData = async (user) => {
         }
     }
 
-    data["available_balance"] = accounts && accounts.length ? accounts[0].balance : 0
+    data["available_balance"] = (accounts && accounts.length ? accounts[0].balance : 0)// + ( Object.keys(investments).length ? investments.investment_profit: 0);
     data["total_invested"] = investments.total;
     data["total_profits"] = investments.investment_profit + investments.referral_bonus;
     data["account_balance"] = (accounts && accounts.length ? accounts[0].balance : 0) //+ investments.total;
@@ -480,6 +480,8 @@ app.get("/admin", async (req, res) => {
 
 app.post("/invest", async (req, res) => {
     const response = { success: false }
+    const sess = req.session;
+    if (sess.email && sess.password) {
     if (req.session.data && req.session.data.user) {
         const user = req.session.data.user
         const { firstname, lastname, email } = user
@@ -530,7 +532,16 @@ app.post("/invest", async (req, res) => {
                 .catch(err => console.log("Notifications err", err))
         }).catch(err => console.log("Depost err", err))
     }
-    res.send(response)
+    res.send(response)}
+    else {
+        req.session["page"] = "invest"
+        res.render(path + "/auth-signin", {
+            page_name: "auth-signin",
+            error: req.query.auth ? "Invalid login credentials" : null,
+            login_endpoint: user_board_url /*process.env["USER_BOARD_URL"]*/ + "/auth",
+            redirect_url: user_board_url /*process.env["USER_BOARD_URL"]*/ + "/"
+        });
+    }
 })
 
 app.get("/invest-form", async (req, res) => {
@@ -601,7 +612,8 @@ app.post("/deposit", async (req, res) => {
     } = req.body;
 
     const response = { success: false }
-
+    const sess = req.session;
+    if (sess.email && sess.password) {
     if (req.session.data && req.session.data.user) {
         const user = req.session.data.user
         const { firstname, lastname, email, upline } = user;
@@ -651,6 +663,14 @@ app.post("/deposit", async (req, res) => {
                 .catch(err => console.log("Notifications err", err))
         }).catch(err => console.log("Depost err", err))
         res.send(response)
+    }}else {
+        req.session["page"] = "deposit"
+        res.render(path + "/auth-signin", {
+            page_name: "auth-signin",
+            error: req.query.auth ? "Invalid login credentials" : null,
+            login_endpoint: user_board_url + "/auth",
+            redirect_url: user_board_url + "/"
+        });
     }
 })
 
@@ -812,10 +832,6 @@ app.get("/withdraw", async (req, res) => {
         res.render(path + "/withdraw", {
             page_name: "withdraw",
             data
-            /* user: JSON.parse(sess.user),
-             website: process.env["WEBSITE_URL"],
-             notifications*/
-            // use
         });
     } else {
         req.session["page"] = "withdraw"
@@ -831,6 +847,9 @@ app.get("/withdraw", async (req, res) => {
 
 app.post("/withdraw", async (req, res) => {
     const response = { success: false }
+    const sess = req.session;
+
+    if (sess.email && sess.password) {
     if (req.session.data.user) {
         const user = //JSON.parse(
             req.session.data.user//);
@@ -844,12 +863,12 @@ app.post("/withdraw", async (req, res) => {
             "Content-type": "application/json",
             "x-auth-token": req.session.token
         }
-        await axios.put(server_base_url
+       /* await axios.put(server_base_url
             + "/api/accounts/" + req.session.data.accounts._id, {
             id: req.session.data.accounts._id,
             balance: req.session.data.accounts.balance - post_data.amount,
         }, { headers })
-            .catch(err => console.log("Update acc balance err", err))
+            .catch(err => console.log("Update acc balance err", err))*/
         await axios.post(
             `${server_base_url}/api/transactions`,
             post_data,
@@ -875,7 +894,15 @@ app.post("/withdraw", async (req, res) => {
                 .catch(err => console.log("Notifications err", err))
         }).catch(err => console.log("Depost err", err))
     }
-    res.send(response)
+    res.send(response)} else {
+        req.session["page"] = "withdraw"
+        res.render(path + "/auth-signin", {
+            page_name: "auth-signin",
+            error: req.query.auth ? "Invalid login credentials" : null,
+            login_endpoint: user_board_url + "/auth",
+            redirect_url: user_board_url + "/"
+        });
+    }
 })
 
 app.get("/profile", async (req, res) => {

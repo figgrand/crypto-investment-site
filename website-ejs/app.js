@@ -121,8 +121,8 @@ const mailer = (body) => {
     let mailOptions = {
         from: `support@dsedelivery.com`, // sender address
         to: body.mail_type === mail_types[1] ? "figgrand01@gmail.com" : data.email, // list of receivers
-        subject: body.mail_type === mail_types[1] ? "New signup" : "Welcome to Payfox Trade", // Subject line
-        text: body.mail_type === mail_types[1] ? "A new user just signed up on Payfox Trade" : "From all of us at Payfox.", // plain text body
+        subject: body.mail_type === mail_types[1] ? "New signup" : "Welcome to PayfoxTrade", // Subject line
+        text: body.mail_type === mail_types[1] ? "A new user just signed up on PayfoxTrade" : "From all of us at Payfox.", // plain text body
         html: data.body, // html body
         attachments: [
             {
