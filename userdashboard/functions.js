@@ -22,14 +22,14 @@ const getTransactions = async (user_id) => {
             }
         }
 
-    }).catch(() => console.log("Get transactions error", err))
+    }).catch((err) => console.log("Get transactions error", err))
     return transactions
 }
 
 const getAllTransactions = async (status) => {
     //console.log("get transactions");
     let transactions = []
-    await axios.get(process.env["SERVER_BASE_URL"] + "/api/transactions").then(res => {
+    await axios.get(process.env["SERVER_BASE_URL"] + "/api/transactions").then(async res => {
         if (res.data.length) {
             if (status === "others") {
                 transactions = res.data.filter(d => d.status !== "pending")
@@ -39,9 +39,11 @@ const getAllTransactions = async (status) => {
             } else {
                 transactions = res.data
             }
+
+            await transactions.sort((a,b) => new Date(b.date_created) - new Date(a.date_created))
         }
 
-    }).catch(() => console.log("Get transactions error", err))
+    }).catch((err) => console.log("Get transactions error", err))
     return transactions
 }
 
@@ -197,7 +199,7 @@ const getDownlines = async (ref_code) => {
     await axios.get(process.env["SERVER_BASE_URL"] + "/api/users?upline=" + ref_code).then(res => {
 
         users = res.data;
-    }).catch(() => console.log("Get downlines error", err))
+    }).catch((err) => console.log("Get downlines error", err))
     return users
 }
 
@@ -218,7 +220,7 @@ const getNotifications = async (user_id) => {
             notifications.data.map(n => n.time_diff = timeDiff(n.date_created))
         }
 
-    }).catch(() => console.log("Get notifications error", err))
+    }).catch((err) => console.log("Get notifications error", err))
     return notifications
 }
 
@@ -380,7 +382,7 @@ const getUsers = async () => {
     let users = []
     await axios.get(process.env["SERVER_BASE_URL"] + "/api/users").then(res => {
         users = res.data
-    }).catch(() => console.log("Get users error", err))
+    }).catch((err) => console.log("Get users error", err))
     return users
 }
 

@@ -17,7 +17,7 @@ function toggleChangeBtn() {
 }
 
 document.getElementById("password").addEventListener("change", toggleChangeBtn);
-
+document.getElementById("password").addEventListener("keyup", toggleChangeBtn);
 const changePassword = async () => {
   //console.log("changePassword");
   changeBtn.setAttribute("disabled", true);

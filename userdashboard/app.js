@@ -295,16 +295,16 @@ app.post("/submit-registration", async (req, res) => {
         response.success = true
         console.log("success");
         await sendMail({
-            firstname, lastname, email, mail_type: mail_types[0]
+            firstname, lastname, email, mail_type: "client_welcome"
         });
 
         await sendMail({
-            firstname, lastname, email, mail_type: mail_types[1]
+            firstname, lastname, email, mail_type: "new_user_notification"
         })
         console.log(resp)
     }).catch(err => {
         //console.log(err) 
-        console.log("error");
+        console.log("error", err);
         response.error = err.response && err.response.data ? err.response.data.msg : "Something went wrong. Please try again."
     })
 
@@ -347,6 +347,7 @@ const fetchData = async (user) => {
         const total_invested = await functions.calcTotalTransByType(active_investments, "investment");
         const all_accounts = await functions.getAccounts();
         const users = await functions.getUsers();
+        //console.log(users);
 
         data["admin"] = {
             total_deposit,
@@ -681,13 +682,12 @@ app.put("/update-transaction", async (req, res) => {
                 response.success = true;
                 response.data = resp.data;
                 response.data._id = response.data.type = response.data.date_created = response.data.date_modified = undefined;
-                 
-                console.log("resp.data.created_by.id", resp.data.created_by.id);
+                const user_details = sess.data.admin.users.find(u => u._id === resp.data.created_by.id);
+                const { firstname, lastname, email, upline } = user_details 
+                console.log("upline", upline);
+                //console.log("resp.data.created_by.id", resp.data.created_by.id);
                 if (req.body.status === "approved") {
-                    const user_details = sess.data.admin.users.find(u => u._id === resp.data.created_by.id);
-                   
-                    const upline_details = await functions.getUplineDetails(user_details.upline);
-                    const upline_account = upline_details["accounts"];
+                         
                     const user_account = sess.data.admin.all_accounts.find(a => a.created_by._id === resp.data.created_by._id)
                     const account_id = user_account && user_account._id;
 
@@ -705,51 +705,9 @@ app.put("/update-transaction", async (req, res) => {
                         modifier: data.modifier,
                     };
 
-                    let update_upline_acc_body = {
-                        id: upline_account[0] && upline_account[0]._id || undefined,
-                        balance: upline_account[0] && parseInt(upline_account[0].balance) + (parseInt(resp.data.amount) * referral_bonus),
-                        created_by: { id: upline_details._id, firstname: upline_details.firstname, lastname: upline_details.lastname, email: upline_details.email },
-                        modifier: data.modifier,
-                    };
-
-                    let post_upline_acc_body = {
-                        created_by: { id: upline_details._id, firstname: upline_details.firstname, lastname: upline_details.lastname, email: upline_details.email },
-                        currency: resp.data.currency,
-                        balance: resp.data.amount * referral_bonus,
-                        modifier: data.modifier,
-                    };
-
                     let xyz = resp.data.amount * referral_bonus;
 
-                    let post_upline_data = {
-                        type: "referral_bonus",
-                        created_by: {
-                            id: upline_details._id,
-                            firstname: upline_details.firstname,
-                            lastname: upline_details.lastname,
-                            email: upline_details.email
-                        },
-                        upline: upline_details.upline,
-                        amount: xyz,
-                        currency: resp.data.currency
-                    };
-
-                  /*  console.log(
-                        "user_details", user_details,
-                        "upline_details", upline_details,
-                        "upline_account", upline_account,
-                        "user_account", user_account,
-                        "account_id", account_id,
-                        "update_acc_body", update_acc_body,
-                        "post_acc_body", post_acc_body,
-                        "update_upline_acc_body", update_upline_acc_body,
-                        "post_upline_acc_body", post_upline_acc_body,
-                        "xyz", xyz,
-                        "post_upline_data", post_upline_data
-                    );*/
-
-                    //update account by socket
-                   axios({
+                    axios({
                         method: account_id ? "PUT" : "POST",
                         url: account_id
                             ? `${server_base_url}/api/accounts/${account_id}`
@@ -757,36 +715,85 @@ app.put("/update-transaction", async (req, res) => {
                         data: account_id ? update_acc_body : post_acc_body,
                         headers
                     })
-                    axios({
-                        method: upline_account.length ? "PUT" : "POST",
-                        url: upline_account.length
-                            ? `${server_base_url}/api/accounts/${upline_account[0]._id}`
-                            : `${server_base_url}/api/accounts`,
-                        data: upline_account.length ? update_upline_acc_body : post_upline_acc_body,
-                        headers
+
+                    await sendMail({
+                        firstname,
+                        lastname,
+                        amount: resp.data.amount,
+                        email,
+                        mail_type: "approved_deposit"
                     })
-                    axios.post(
-                        `${server_base_url}/api/transactions`,
-                        post_upline_data,
-                        {
-                            headers
-                        }
-                    ).then(async resp => {
-                        response.success = true;
-                        response.data = resp.data
-                        await axios.post(
-                            `${server_base_url}/api/notifications`,
-                            {
-                                user: upline_details._id,
-                                title: `Referral bonus deposited.`,
-                                description: `Your downline: ${user_details.firstname} ${user_details.lastname} has deposited ${resp.data.amount} and you have received ${resp.data.amount * referral_bonus} referral bonus.`
+
+                    if (upline) {
+                        const upline_details = await functions.getUplineDetails(user_details.upline);
+                        const upline_account = upline_details["accounts"];
+    
+                        let update_upline_acc_body = {
+                            id: upline_account[0] && upline_account[0]._id || undefined,
+                            balance: upline_account[0] && parseInt(upline_account[0].balance) + (parseInt(resp.data.amount) * referral_bonus),
+                            created_by: { id: upline_details._id, firstname: upline_details.firstname, lastname: upline_details.lastname, email: upline_details.email },
+                            modifier: data.modifier,
+                        };
+    
+                        let post_upline_acc_body = {
+                            created_by: { id: upline_details._id, firstname: upline_details.firstname, lastname: upline_details.lastname, email: upline_details.email },
+                            currency: resp.data.currency,
+                            balance: resp.data.amount * referral_bonus,
+                            modifier: data.modifier,
+                        };
+    
+                        let post_upline_data = {
+                            type: "referral_bonus",
+                            created_by: {
+                                id: upline_details._id,
+                                firstname: upline_details.firstname,
+                                lastname: upline_details.lastname,
+                                email: upline_details.email
                             },
+                            upline: upline_details.upline,
+                            amount: xyz,
+                            currency: resp.data.currency
+                        };
+
+                        axios({
+                            method: upline_account.length ? "PUT" : "POST",
+                            url: upline_account.length
+                                ? `${server_base_url}/api/accounts/${upline_account[0]._id}`
+                                : `${server_base_url}/api/accounts`,
+                            data: upline_account.length ? update_upline_acc_body : post_upline_acc_body,
+                            headers
+                        })
+                        axios.post(
+                            `${server_base_url}/api/transactions`,
+                            post_upline_data,
                             {
                                 headers
                             }
-                        )
-                            .catch(err => console.log("Notifications err", err))
-                    }).catch(err => console.log("Depost err", err)) 
+                        ).then(async resp => {
+                            response.success = true;
+                            response.data = resp.data
+                            await axios.post(
+                                `${server_base_url}/api/notifications`,
+                                {
+                                    user: upline_details._id,
+                                    title: `Referral bonus deposited.`,
+                                    description: `Your downline: ${user_details.firstname} ${user_details.lastname} has deposited ${resp.data.amount} and you have received ${resp.data.amount * referral_bonus} referral bonus.`
+                                },
+                                {
+                                    headers
+                                }
+                            )
+                                .catch(err => console.log("Notifications err", err))
+                        }).catch(err => console.log("Depost err", err)) 
+                        await sendMail({
+                            firstname: upline_details.firstname,
+                            lastname: upline_details.lastname,
+                            amount: resp.data.amount,
+                            email: upline_details.email,
+                            mail_type: "referral_deposit",
+                            message: `Your downline ${firstname} ${lastname} has just deposited ${resp.data.amount} BTC. You have been credited with ${xyz} BTC.`
+                        })
+                    }
                 }
             })
             .catch(err => console.log("Update transaction err", err))
@@ -1099,13 +1106,13 @@ app.post("/cancel-investment", async (req, res) => {
     res.send(response)
 })
 
-const server = app.listen(port, function () {
+/*const server = */app.listen(port, function () {
     console.log("userdashboard server listening at ", port);
 });
 
-const io = socketio(server)
+/*const io = socketio(server)
 
 io.on('connection', (socket) => {
     console.log(`New connection: ${socket.id}`);
     socket.emit('notification', 'Thanks for connecting to Codedamn!')
-})
+})*/
