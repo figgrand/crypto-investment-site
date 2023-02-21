@@ -42,36 +42,38 @@ const confirmInvestment = async () => {
 input.addEventListener('keyup', () => {
   let err
   let value
-  console.log("hello");
   try {
     value = JSON.parse(input.value)
-    /*if(value > acc_bal && (min > value < max)){
-      err = "Insufficient account balance"
-    } 
-    
-    if ( value > acc_bal && value < min){
-      err = "Minimum investment amount is " + min + " BTC"
-    } 
-    if (value > max){
-      err = "Maximum investment amount is " + max + " BTC"
-    } */
-
+    //console.log({value, acc_bal, min, max});
     if (value > acc_bal) {
       if (value > max) {
         err = "Maximum investment amount is " + max + " BTC"
+        investmentBtn.setAttribute("disabled", true)
+        console.log("first");
       } else {
         err = "Insufficient account balance"
+        investmentBtn.setAttribute("disabled", true)
+        console.log("second");
       }
     } else {
       if (value < min) {
         err = "Minimum investment amount is " + min + " BTC"
+        investmentBtn.setAttribute("disabled", true)
+        console.log("third");
       } else if (value > max) {
         err = "Maximum investment amount is " + max + " BTC"
+        investmentBtn.setAttribute("disabled", true)
+        console.log("fourth");
       } else if (value === acc_bal) {
         if (value < min) {
           err = "Minimum investment amount is " + min + " BTC"
+          investmentBtn.setAttribute("disabled", true)
+          console.log("fifth");
         } else {
-          err = "Maximum investment amount is " + max + " BTC"
+          err = ""
+          investmentBtn.removeAttribute("disabled")
+          console.log("sixth");
+          //err = "Maximum investment amount is " + max + " BTC"
         }
       } else {
         err = ""

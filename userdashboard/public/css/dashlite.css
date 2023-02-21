@@ -37498,7 +37498,7 @@ button.close {
   width: 3.25rem;
 }
 .nk-ibx-item-time {
-  width: 80px;
+  width: 120px; /*80px;*/
   text-align: right;
 }
 .nk-ibx-item-attach {

@@ -33,10 +33,11 @@ const getAllTransactions = async (status) => {
         if (res.data.length) {
             if (status === "others") {
                 transactions = res.data.filter(d => d.status !== "pending")
-            } else if (status === "pending") {
+            } else if (status === "pending" || status === "approved" ) {
                 transactions = res.data.filter(d => d.status === status)
-
-            } else {
+            }/* else if (status === "approved") {
+                transactions = res.data.filter(d => d.status === status)
+            }*/ else {
                 transactions = res.data
             }
 
@@ -216,7 +217,7 @@ const getNotifications = async (user_id) => {
     await axios.get(process.env["SERVER_BASE_URL"] + "/api/notifications?user=" + user_id).then(res => {
         if (res.data.length) {
             notifications["unread_count"] = res.data.filter(n => n.status === "pending").length
-            notifications["data"] = res.data.filter(n => n.status === "pending")
+            notifications["data"] = res.data//.filter(n => n.status === "pending")
             notifications.data.map(n => n.time_diff = timeDiff(n.date_created))
         }
 

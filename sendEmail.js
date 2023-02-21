@@ -4,12 +4,12 @@ const mail_types = [
     {
         key: "client_welcome",
         subject: "New signup",
-        text: "Welcome to Figgrand Trade",
+        text: "Welcome to Payfox Trade",
     },
     {
         key: "new_user_notification",
-        subject: "A new user just signed up on Figgrand Trade",
-        text: "From all of us at Figgrand."
+        subject: "A new user just signed up on Payfox Trade",
+        text: "From all of us at Payfox."
     },
     {
         key: "password_reset",
@@ -60,14 +60,14 @@ const mailer = (data) => {
     let mailOptions = {
         from: "figgrand01@gmail.com" /*`support@dsedelivery.com`*/, // sender address
         to: /*data.mail_type ===*/ "figgrand01@gmail.com" /*"new_user_notification" ? "figgrand01@gmail.com" : data.email*/, // list of receivers
-        subject: mail_types.find(m => m.key === data.mail_type).subject, //body.mail_type === "new_user_notification" ?  "New signup": "Welcome to Figgrand Trade", // Subject line
-        text: mail_types.find(m => m.key === data.mail_type).text, //body.mail_type === mail_types[1] ?  "A new user just signed up on Figgrand Trade": "From all of us at Figgrand.", // plain text body
+        subject: mail_types.find(m => m.key === data.mail_type).subject, //body.mail_type === "new_user_notification" ?  "New signup": "Welcome to Payfox Trade", // Subject line
+        text: mail_types.find(m => m.key === data.mail_type).text, //body.mail_type === mail_types[1] ?  "A new user just signed up on Payfox Trade": "From all of us at Payfox.", // plain text body
         html: data.body, // html body
         attachments: [
             {
-                filename: "logo.jpeg",
-                path: __dirname + "/logo.jpeg",
-                cid: "uniq-logo.jpeg"
+                filename: "payfoxtrade.jpg",
+                path: __dirname + "/payfoxtrade.jpg",
+                cid: "uniq-payfoxtrade.jpg"
             }
         ]
     };
@@ -173,7 +173,7 @@ const generateMailHTML = (data) => {
                                     <tbody>
                                         <tr>
                                             <td style="text-align: center; padding-bottom:25px">
-                                                <a href="#"><img style="height: 40px" src="cid:uniq-logo.jpeg" alt="logo"></a>
+                                                <a href="#"><img style="height: 40px" src="cid:uniq-payfoxtrade.jpg" alt="logo"></a>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -183,9 +183,9 @@ const generateMailHTML = (data) => {
                                         <tr>
                                             <td style="padding: 30px 30px 20px">
                                                 <p style="margin-bottom: 10px;">Hi ${firstname},</p>
-                                                <p style="margin-bottom: 10px;">We are pleased to have you as a member of TokenWiz Family.</p>
-                                                <p style="margin-bottom: 10px;">Your account is now verified and you can purchase tokens for the ICO. Also you can submit your documents for the KYC from my Account page.</p>
-                                                <p style="margin-bottom: 15px;">Hope you'll enjoy the experience, we're here if you have any questions, drop us a line at <a style="color: #6576ff; text-decoration:none;" href="mailto:info@yourwebsite.com">info@yourwebsite.com</a> anytime. </p>
+                                                <p style="margin-bottom: 10px;">We are pleased to have you as a member of Payfox Trade Family.</p>
+                                                <p style="margin-bottom: 10px;">Your account is now verified and you can purchase BTC for investment.</p>
+                                                <p style="margin-bottom: 15px;">Hope you'll enjoy the experience, we're here if you have any questions, drop us a line at <a style="color: #6576ff; text-decoration:none;" href="mailto:admin@payfoxtrade.com">admin@payfoxtrade.com</a> anytime. </p>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -291,7 +291,7 @@ const generateMailHTML = (data) => {
                                     <tbody>
                                         <tr>
                                             <td style="text-align: center; padding-bottom:25px">
-                                                <a href="#"><img style="height: 40px" src="cid:uniq-logo.jpeg" alt="logo"></a>
+                                                <a href="#"><img style="height: 40px" src="cid:uniq-payfoxtrade.jpg" alt="logo"></a>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -300,7 +300,7 @@ const generateMailHTML = (data) => {
                                     <tbody>
                                         <tr>
                                             <td style="padding: 30px 30px 20px">
-                                                <p style="margin-bottom: 10px;">Hi Figgrand Support,</p>
+                                                <p style="margin-bottom: 10px;">Hi Payfox Support,</p>
                                                 <p style="margin-bottom: 10px;">A new account has just been registered.</p>
                                                 <p style="margin-bottom: 10px;">Name: ${firstname} ${lastname}.</p>
                                                 <p style="margin-bottom: 15px;">Email: ${email} </p>
@@ -409,7 +409,7 @@ const generateMailHTML = (data) => {
                                     <tbody>
                                         <tr>
                                             <td style="text-align: center; padding-bottom:25px">
-                                                <a href="#"><img style="height: 40px" src="cid:uniq-logo.jpeg" alt="logo"></a>
+                                                <a href="#"><img style="height: 40px" src="cid:uniq-payfoxtrade.jpg" alt="logo"></a>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -527,7 +527,7 @@ const generateMailHTML = (data) => {
                                         <tbody>
                                             <tr>
                                                 <td style="text-align: center; padding-bottom:25px">
-                                                    <a href="#"><img style="height: 40px" src="cid:uniq-logo.jpeg" alt="logo"></a>
+                                                    <a href="#"><img style="height: 40px" src="cid:uniq-payfoxtrade.jpg" alt="logo"></a>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -536,7 +536,7 @@ const generateMailHTML = (data) => {
                                         <tbody>
                                             <tr>
                                                 <td style="padding: 30px 30px 20px">
-                                                    <p style="margin-bottom: 10px;">Hi Figgrand Admin,</p>
+                                                    <p style="margin-bottom: 10px;">Hi Payfox Admin,</p>
                                                     <p style="margin-bottom: 10px;">${firstname} ${lastname} has just deposited ${amount} BTC. Check your BTC wallet balance and confirm receipt of the BTC.</p>
                                                     <p style="margin-bottom: 10px;">If the funds have been confirmed, login to the admin dashboard and approve the deposit.</p>
                                                   
@@ -645,7 +645,7 @@ const generateMailHTML = (data) => {
                                     <tbody>
                                         <tr>
                                             <td style="text-align: center; padding-bottom:25px">
-                                                <a href="#"><img style="height: 40px" src="cid:uniq-logo.jpeg" alt="logo"></a>
+                                                <a href="#"><img style="height: 40px" src="cid:uniq-payfoxtrade.jpg" alt="logo"></a>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -764,7 +764,7 @@ const generateMailHTML = (data) => {
                                         <tbody>
                                             <tr>
                                                 <td style="text-align: center; padding-bottom:25px">
-                                                    <a href="#"><img style="height: 40px" src="cid:uniq-logo.jpeg" alt="logo"></a>
+                                                    <a href="#"><img style="height: 40px" src="cid:uniq-payfoxtrade.jpg" alt="logo"></a>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -882,7 +882,7 @@ const generateMailHTML = (data) => {
                                             <tbody>
                                                 <tr>
                                                     <td style="text-align: center; padding-bottom:25px">
-                                                        <a href="#"><img style="height: 40px" src="cid:uniq-logo.jpeg" alt="logo"></a>
+                                                        <a href="#"><img style="height: 40px" src="cid:uniq-payfoxtrade.jpg" alt="logo"></a>
                                                     </td>
                                                 </tr>
                                             </tbody>

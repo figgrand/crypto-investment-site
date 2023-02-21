@@ -32,3 +32,11 @@
   background-color: #16a085 !important;
   color: #fff;
 }
+
+.btnDeposit {
+  border: 2px solid #16a085;
+}
+
+#hide {
+  display: none !important;
+}

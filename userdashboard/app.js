@@ -999,16 +999,16 @@ app.get("/notifications", async (req, res) => {
     console.log("id", id);
     const sess = req.session;
     if (sess.email && sess.password) {
-         const data = await fetchData(JSON.parse(sess.user))
-        req.session["data"] = data;
+         //const data = await fetchData(JSON.parse(sess.user))
+        //req.session["data"] = data;
         const notifications = sess.data.user.notifications.data
-        //const data = sess.data
+        const data = sess.data
 
         if (id) {
 
             const notification = notifications ? notifications.find(n => n._id === id) : {}
 
-            if (notification.status == "pending") {
+            if (notification /*&& notification.status == "pending"*/) {
                 await axios.put(`${server_base_url}/api/notifications/${id}`, {
                     status: "read"
                 }, {
@@ -1022,13 +1022,13 @@ app.get("/notifications", async (req, res) => {
                     response.msg = err.response && err.response.data
                         ? err.response.data.msg : "An error occured. Please try again."
                 })
+                res.render(path + '/notification-details', {
+                    page_name: "notification-details",
+                    notification,
+                    data
+                })
             }
-
-            res.render(path + '/notification-details', {
-                page_name: "notification-details",
-                notification,
-                data
-            })
+            
         } else {
             res.render(path + "/notifications", {
                 page_name: "notifications",
