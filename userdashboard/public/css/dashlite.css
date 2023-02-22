@@ -37729,6 +37729,7 @@ button.close {
     left: 12px;
   }
   .nk-ibx-item-time {
+    display: none !important;
     right: 12px;
   }
   .nk-ibx-item-tools {
